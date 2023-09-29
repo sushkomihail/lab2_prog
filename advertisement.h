@@ -6,78 +6,139 @@
 
 using namespace std;
 
-struct Advertisement;
+class Advertisement;
 
-struct User {
-	string Login;
-	int Password;
-	int PhoneNumber;
-	vector<Advertisement> Favourites;
+typedef vector<Advertisement> AdvertisementList;
+
+class User {
+private:
+	string _login;
+	int _password;
+	int _phoneNumber;
+	AdvertisementList _favourites;
+
+public:
+	User(string login, int password, int phoneNumber);
+
+	User(string login);
+
+	User();
+
+	string GetLogin();
+
+	int GetPassword();
+
+	int GetPhoneNumber();
+
+	AdvertisementList GetFavourites();
 };
 
-struct Car {
-	string Brand;
-	int Year;
-	int EnginePower;
-	string Transmission;
-	int Mileage;
+class Car {
+private:
+	string _brand;
+	int _year;
+	int _enginePower;
+	string _transmission;
+	int _mileage;
+
+public:
+	Car(string brand, int year, int enginePower, string transmission, int mileage);
+
+	Car(string brand);
+
+	Car();
+
+	string GetBrand();
+
+	int GetYear();
+
+	void PrintCarData();
 };
 
-struct Report {
-	int CrashesCount;
-	bool IsListedAsWanted;
-	bool AreDocumentsInOrder;
-	bool IsRegistered;
+class Report {
+private:
+	int _crashesCount;
+	bool _isListedAsWanted;
+	bool _areDocumentsInOrder;
+	bool _isRegistered;
+
+public:
+	Report(int crashesCount, bool isListedAsWanted, bool areDocumentsInOrder, bool isRegistered);
+
+	Report(int crashesCount);
+
+	Report();
+
+	void PrintReportData();
 };
 
-struct Advertisement {
-	int Index;
-	Car Car;
-	Report Report;
-	string Location;
-	int Price;
-	User Seller;
+class Advertisement {
+private:
+	int _index;
+	Car _car;
+	Report _report;
+	string _location;
+	int _price;
+	User _seller;
+
+public:
+	Advertisement(int index, Car car, Report report, string location, int price, User seller);
+
+	Advertisement(int index);
+
+	Advertisement();
+
+	int GetIndex();
+
+	Car GetCar();
+
+	string GetLocation();
+
+	int GetPrice();
+
+	User GetSeller();
+
+	void PrintAdvertisementData();
 };
 
-struct SearchData {
-	string Brand;
-	int Year;
-	int Price;
-	string Location;
+class SearchData {
+private:
+	string _brand;
+	int _year;
+	int _price;
+	string _location;
+
+public:
+	SearchData(string brand, int year, int price, string location);
+
+	SearchData(string brand);
+
+	SearchData();
+
+	string GetBrand();
+
+	int GetYear();
+
+	int GetPrice();
+
+	string GetLocation();
+
+	void PrintSearchData();
 };
 
 typedef vector<User> UserList;
-typedef vector<Advertisement> AdvertisementList;
-
-User InitUser(string login, int password, int phoneNumber);
 
 void CreateNewUser(UserList* users);
 
 bool EnterToSystem(UserList users, User* user);
 
-Car InitCar(string brand, int year, int enginePower, string transmission, int mileage);
-
 Car CreateNewCar();
-
-void PrintCarData(Car car);
-
-Report InitReport(int crashesCount, bool isListedAsWanted, bool areDocumentsInOrder, bool isRegistered);
 
 Report CreateNewReport();
 
-void PrintReportData(Report report);
-
-Advertisement InitAdvertisement(int index, Car car, Report report, string location, int price, User seller);
-
 Advertisement CreateNewAdvertisement(User user, AdvertisementList* advertisements);
 
-void PrintAdvertisement(Advertisement advertisement);
-
-SearchData InitSearchData(string brand, int year, int price, string location);
-
 SearchData CreateNewSearchData();
-
-void PrintSearchData(SearchData data);
 
 void PrintAdvertisements(AdvertisementList advertisements);
 
