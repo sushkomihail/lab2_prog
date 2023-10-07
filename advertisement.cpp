@@ -344,7 +344,7 @@ Report::Report(int crashesCount, bool isListedAsWanted, bool areDocumentsInOrder
 
 Report::Report(int crashesCount)
 {
-	crashesCount = crashesCount;
+	_crashesCount = crashesCount;
 }
 
 Report::Report()
