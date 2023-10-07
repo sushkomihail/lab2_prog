@@ -11,15 +11,20 @@ void Dynamic() {
     User userB = InitUser("Михаил", 12345, 88005553535);
     *userA = userB;
     cout << userA->Login;
+    delete userA;
 }
 
 int main()
 {
     setlocale(LC_ALL, "rus");
 
+    cout << "----- Статическая переменная -----" << endl;
     Static();
     Static();
     Static();
 
+    cout << endl;
+
+    cout << "----- Динамическая переменная -----" << endl;
     Dynamic();
 }
