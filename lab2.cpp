@@ -11,6 +11,7 @@ void Dynamic() {
     User userB = InitUser("Михаил", 12345, 88005553535);
     *userA = userB;
     cout << userA->Login;
+    delete userA;
 }
 
 int main()
