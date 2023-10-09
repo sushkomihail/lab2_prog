@@ -31,6 +31,8 @@ public:
 	int GetPhoneNumber();
 
 	AdvertisementList GetFavourites();
+
+	void PrintUserData();
 };
 
 class Car {
@@ -103,6 +105,7 @@ public:
 
 class SearchData {
 private:
+	const int COMPARES_TARGET = 4;
 	string _brand;
 	int _year;
 	int _price;
@@ -114,6 +117,8 @@ public:
 	SearchData(string brand);
 
 	SearchData();
+
+	int GetComparesTarget();
 
 	string GetBrand();
 

@@ -189,7 +189,6 @@ AdvertisementList SortedAdvertisements(AdvertisementList advertisements, SearchD
 	AdvertisementList list;
 
 	int counter;
-	int counterTarget = 4;
 
 	for (Advertisement advertisement : advertisements) {
 		CompareSearchData(advertisement.GetCar().GetBrand() == data.GetBrand() || data.GetBrand() == "", &counter);
@@ -197,7 +196,7 @@ AdvertisementList SortedAdvertisements(AdvertisementList advertisements, SearchD
 		CompareSearchData(advertisement.GetPrice() == data.GetPrice() || data.GetPrice() == -1, &counter);
 		CompareSearchData(advertisement.GetLocation() == data.GetLocation() || data.GetLocation() == "", &counter);
 
-		if (counter == counterTarget) {
+		if (counter == data.GetComparesTarget()) {
 			list.push_back(advertisement);
 		}
 	}
@@ -296,6 +295,15 @@ AdvertisementList User::GetFavourites()
 	return _favourites;
 }
 
+void User::PrintUserData()
+{
+	cout << "----- Данные пользователя -----" << endl;
+	cout << "Логин: " + _login << endl;
+	cout << "Номер телефона: " << _phoneNumber << endl;
+	cout << "Избранные объявления: " << endl;
+	PrintAdvertisements(_favourites);
+}
+
 Car::Car(string brand, int year, int enginePower, string transmission, int mileage)
 {
 	_brand = brand;
@@ -378,6 +386,11 @@ SearchData::SearchData(string brand)
 
 SearchData::SearchData()
 {
+}
+
+int SearchData::GetComparesTarget()
+{
+	return COMPARES_TARGET;
 }
 
 string SearchData::GetBrand()
