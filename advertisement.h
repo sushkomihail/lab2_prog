@@ -9,6 +9,7 @@ using namespace std;
 class Advertisement;
 
 typedef vector<Advertisement> AdvertisementList;
+typedef vector<User> UserList;
 
 class User {
 private:
@@ -32,6 +33,8 @@ public:
 
 	AdvertisementList GetFavourites();
 
+	void Create(UserList* users);
+
 	void PrintUserData();
 };
 
@@ -54,6 +57,8 @@ public:
 
 	int GetYear();
 
+	void Create();
+
 	void PrintCarData();
 };
 
@@ -70,6 +75,8 @@ public:
 	Report(int crashesCount);
 
 	Report();
+
+	void Create();
 
 	void PrintReportData();
 };
@@ -100,6 +107,12 @@ public:
 
 	User GetSeller();
 
+	void Create(User user, AdvertisementList* advertisements);
+
+	void AddToFavourites(User* user);
+
+	void Delete(User user, AdvertisementList* advertisements);
+
 	void PrintAdvertisementData();
 };
 
@@ -111,6 +124,14 @@ private:
 	int _price;
 	string _location;
 
+	void CompareSearchData(bool expression, int* counter);
+
+	bool CanEnterFilterField(string question);
+
+	void InputFilterField(string title, int* destination);
+
+	void InputFilterField(string title, string* destination);
+
 public:
 	SearchData(string brand, int year, int price, string location);
 
@@ -118,37 +139,13 @@ public:
 
 	SearchData();
 
-	int GetComparesTarget();
+	void Create();
 
-	string GetBrand();
-
-	int GetYear();
-
-	int GetPrice();
-
-	string GetLocation();
+	AdvertisementList SortAdvertisementList(AdvertisementList list);
 
 	void PrintSearchData();
 };
 
-typedef vector<User> UserList;
-
-void CreateNewUser(UserList* users);
-
 bool EnterToSystem(UserList users, User* user);
 
-Car CreateNewCar();
-
-Report CreateNewReport();
-
-Advertisement CreateNewAdvertisement(User user, AdvertisementList* advertisements);
-
-SearchData CreateNewSearchData();
-
 void PrintAdvertisements(AdvertisementList advertisements);
-
-void DeleteAdvertisement(User user, AdvertisementList* advertisements, Advertisement advertisement);
-
-void AddToFavourites(User* user, Advertisement advertisement);
-
-AdvertisementList SortedAdvertisements(AdvertisementList advertisements, SearchData data);
