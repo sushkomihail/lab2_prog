@@ -7,6 +7,7 @@
 using namespace std;
 
 class Advertisement;
+class User;
 
 typedef vector<Advertisement> AdvertisementList;
 typedef vector<User> UserList;
@@ -14,12 +15,12 @@ typedef vector<User> UserList;
 class User {
 private:
 	string _login;
-	int _password;
-	int _phoneNumber;
+	string _password;
+	string _phoneNumber;
 	AdvertisementList _favourites;
 
 public:
-	User(string login, int password, int phoneNumber);
+	User(string login, string password, string phoneNumber);
 
 	User(string login);
 
@@ -27,13 +28,21 @@ public:
 
 	string GetLogin();
 
-	int GetPassword();
+	string GetPassword();
 
-	int GetPhoneNumber();
+	string GetPhoneNumber();
 
 	AdvertisementList GetFavourites();
 
+	void InputLogin();
+
+	void InputPassword();
+
+	void InputPhoneNumber();
+
 	void Create(UserList* users);
+
+	void AddToFavourites(Advertisement advertisement);
 
 	void PrintUserData();
 };
@@ -83,21 +92,24 @@ public:
 
 class Advertisement {
 private:
-	int _index;
+	static int _id;
+	int _currentId;
 	Car _car;
 	Report _report;
 	string _location;
 	int _price;
 	User _seller;
 
-public:
-	Advertisement(int index, Car car, Report report, string location, int price, User seller);
+	void AssignID();
 
-	Advertisement(int index);
+public:
+	Advertisement(Car car, Report report, string location, int price, User seller);
+
+	Advertisement(Car car);
 
 	Advertisement();
 
-	int GetIndex();
+	int GetID();
 
 	Car GetCar();
 
@@ -108,8 +120,6 @@ public:
 	User GetSeller();
 
 	void Create(User user, AdvertisementList* advertisements);
-
-	void AddToFavourites(User* user);
 
 	void Delete(User user, AdvertisementList* advertisements);
 
@@ -125,8 +135,6 @@ private:
 	string _location;
 
 	void CompareSearchData(bool expression, int* counter);
-
-	bool CanEnterFilterField(string question);
 
 	void InputFilterField(string title, int* destination);
 

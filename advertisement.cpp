@@ -1,23 +1,50 @@
 #include "advertisement.h"
 
-void InputLoginPassword(string* login, int* password) {
-	cout << "Введите логин: ";
-	cin >> *login;
-	cout << "Введите пароль: ";
-	cin >> *password;
+bool IsNumber(string string) {
+	for (char symbol : string) {
+		if (symbol < '0' || symbol > '9') {
+			return false;
+		}
+	}
+
+	return true;
+}
+
+void InputIntField(string request, int* destination)
+{	
+	string value;
+
+	do {
+		cout << request;
+		cin >> value;
+		while (getchar() != '\n');
+	} while (!IsNumber(value));
+
+	*destination = stoi(value);
+}
+
+bool InputBoolField(string question)
+{
+	int command;
+
+	do {
+		InputIntField(question, &command);
+	} while (command != 0 && command != 1);
+
+	return command == 1;
 }
 
 bool EnterToSystem(UserList users, User* user)
 {
-	string login;
-	int password;
+	User enteredUser;
 
-	InputLoginPassword(&login, &password);
+	cout << "----- Вход в сервис -----" << endl;
 
-	while (getchar() != '\n');
+	enteredUser.InputLogin();
+	enteredUser.InputPassword();
 
 	for (User createdUser : users) {
-		if (createdUser.GetLogin() == login && createdUser.GetPassword() == password) {
+		if (createdUser.GetLogin() == enteredUser.GetLogin() && createdUser.GetPassword() == enteredUser.GetPassword()) {
 			*user = createdUser;
 			return true;
 		}
@@ -40,9 +67,16 @@ void PrintAdvertisements(AdvertisementList advertisements)
 	}
 }
 
-Advertisement::Advertisement(int index, Car car, Report report, string location, int price, User seller)
+int Advertisement::_id = 0;
+
+void Advertisement::AssignID()
 {
-	_index = index;
+	_currentId = _id++;
+}
+
+Advertisement::Advertisement(Car car, Report report, string location, int price, User seller)
+{
+	AssignID();
 	_car = car;
 	_report = report;
 	_location = location;
@@ -50,18 +84,27 @@ Advertisement::Advertisement(int index, Car car, Report report, string location,
 	_seller = seller;
 }
 
-Advertisement::Advertisement(int index)
+Advertisement::Advertisement(Car car)
 {
-	_index = index;
+	AssignID();
+	_car = car;
+	_report = Report();
+	_price = 0;
+	_seller = User();
 }
 
 Advertisement::Advertisement()
 {
+	AssignID();
+	_car = Car();
+	_report = Report();
+	_price = 0;
+	_seller = User();
 }
 
-int Advertisement::GetIndex()
+int Advertisement::GetID()
 {
-	return _index;
+	return _currentId;
 }
 
 Car Advertisement::GetCar()
@@ -94,26 +137,17 @@ void Advertisement::Create(User user, AdvertisementList* advertisements)
 
 	cout << "Местоположение: ";
 	cin >> _location;
-	cout << "Цена: ";
-	cin >> _price;
+	InputIntField("Цена: ", &_price);
 
-	while (getchar() != '\n');
-
-	_index = advertisements->size();
 	_seller = user;
 
 	advertisements->push_back(*this);
 }
 
-void Advertisement::AddToFavourites(User* user)
-{
-	user->GetFavourites().push_back(*this);
-}
-
 void Advertisement::Delete(User user, AdvertisementList* advertisements)
 {
 	if (_seller.GetLogin() == user.GetLogin() && _seller.GetPassword() == user.GetPassword()) {
-		advertisements->erase(advertisements->begin() + _index);
+		advertisements->erase(advertisements->begin() + _currentId);
 		cout << "Объявление успешно удалено!" << endl;
 		return;
 	}
@@ -132,7 +166,7 @@ void Advertisement::PrintAdvertisementData()
 	cout << "Телефон продавца: " << _seller.GetPhoneNumber() << endl;
 }
 
-User::User(string login, int password, int phoneNumber)
+User::User(string login, string password, string phoneNumber)
 {
 	_login = login;
 	_password = password;
@@ -153,12 +187,12 @@ string User::GetLogin()
 	return _login;
 }
 
-int User::GetPassword()
+string User::GetPassword()
 {
 	return _password;
 }
 
-int User::GetPhoneNumber()
+string User::GetPhoneNumber()
 {
 	return _phoneNumber;
 }
@@ -168,16 +202,42 @@ AdvertisementList User::GetFavourites()
 	return _favourites;
 }
 
+void User::InputLogin()
+{
+	cout << "Введите логин: ";
+	cin >> _login;
+}
+
+void User::InputPassword()
+{
+	cout << "Введите пароль: ";
+	cin >> _password;
+}
+
+void User::InputPhoneNumber()
+{
+	do {
+		cout << "Введите номер телефона: ";
+		cin >> _phoneNumber;
+		while (getchar() != '\n');
+	} while (!IsNumber(_phoneNumber));
+}
+
 void User::Create(UserList* users)
 {
-	cout << "Регистрация\n\n";
-	InputLoginPassword(&_login, &_password);
-	cout << "Введите номер телефона: ";
-	cin >> _phoneNumber;
-
-	while (getchar() != '\n');
+	cout << "----- Регистрация -----\n\n";
+	
+	InputLogin();
+	InputPassword();
+	InputPhoneNumber();
 
 	users->push_back(*this);
+}
+
+void User::AddToFavourites(Advertisement advertisement)
+{
+	_favourites.push_back(advertisement);
+	cout << "Объявление (id = " << advertisement.GetID() << ") добавлено в избранное!" << endl;
 }
 
 void User::PrintUserData()
@@ -201,10 +261,16 @@ Car::Car(string brand, int year, int enginePower, string transmission, int milea
 Car::Car(string brand)
 {
 	_brand = brand;
+	_year = 0;
+	_enginePower = 0;
+	_mileage = 0;
 }
 
 Car::Car()
 {
+	_year = 0;
+	_enginePower = 0;
+	_mileage = 0;
 }
 
 string Car::GetBrand()
@@ -221,16 +287,11 @@ void Car::Create()
 {
 	cout << "Марка: ";
 	getline(cin, _brand);
-	cout << "Год производства: ";
-	cin >> _year;
-	cout << "Мощность двигателя: ";
-	cin >> _enginePower;
+	InputIntField("Год производства: ", &_year);
+	InputIntField("Мощность двигателя: ", &_enginePower);
 	cout << "Тип КПП: ";
 	cin >> _transmission;
-	cout << "Пробег: ";
-	cin >> _mileage;
-
-	while (getchar() != '\n');
+	InputIntField("Пробег: ", &_mileage);
 }
 
 void Car::PrintCarData()
@@ -258,20 +319,15 @@ Report::Report(int crashesCount)
 
 Report::Report()
 {
+	_crashesCount = 0;
 }
 
 void Report::Create()
 {
-	cout << "Количество аварий: ";
-	cin >> _crashesCount;
-	cout << "Находится в розыске?(1-да, 0-нет): ";
-	cin >> _isListedAsWanted;
-	cout << "Документы в порядке?(1-да, 0-нет): ";
-	cin >> _areDocumentsInOrder;
-	cout << "Зарегистрирована?(1-да, 0-нет): ";
-	cin >> _isRegistered;
-
-	while (getchar() != '\n');
+	InputIntField("Количество аварий: ", &_crashesCount);
+	_isListedAsWanted = InputBoolField("Находится в розыске?(1-да, 0-нет): ");
+	_areDocumentsInOrder = InputBoolField("Документы в порядке?(1-да, 0-нет): ");
+	_isRegistered = InputBoolField("Зарегистрирована?(1-да, 0-нет): ");
 }
 
 void Report::PrintReportData()
@@ -291,38 +347,24 @@ void SearchData::CompareSearchData(bool expression, int* counter)
 	if (expression) *counter += 1;
 }
 
-bool SearchData::CanEnterFilterField(string question)
+void SearchData::InputFilterField(string request, int* destination)
 {
-	int command;
-
-	do {
-		cout << question;
-		cin >> command;
-	} while (command != 0 && command != 1);
-
-	while (getchar() != '\n');
-
-	return command == 1;
-}
-
-void SearchData::InputFilterField(string title, int* destination)
-{
-	string question = "Поле '" + title + "'(1 - ввести, 0 - пропустить): ";
-	if (CanEnterFilterField(question)) {
-		cout << title + ": ";
-		cin >> *destination;
+	string question = "Поле '" + request + "'(1 - ввести, 0 - пропустить): ";
+	if (InputBoolField(question)) {
+		InputIntField(request + ": ", destination);
 	}
 	else {
 		*destination = -1;
 	}
 }
 
-void SearchData::InputFilterField(string title, string* destination)
+void SearchData::InputFilterField(string request, string* destination)
 {
-	string question = "Поле '" + title + "'(1 - ввести, 0 - пропустить): ";
-	if (CanEnterFilterField(question)) {
-		cout << title + ": ";
+	string question = "Поле '" + request + "'(1 - ввести, 0 - пропустить): ";
+	if (InputBoolField(question)) {
+		cout << request + ": ";
 		cin >> *destination;
+		while (getchar() != '\n');
 	}
 }
 
@@ -337,10 +379,14 @@ SearchData::SearchData(string brand, int year, int price, string location)
 SearchData::SearchData(string brand)
 {
 	_brand = brand;
+	_year = 0;
+	_price = 0;
 }
 
 SearchData::SearchData()
 {
+	_year = 0;
+	_price = 0;
 }
 
 void SearchData::Create()
@@ -348,27 +394,27 @@ void SearchData::Create()
 	cout << "----- Фильтр -----" << endl << endl;
 	InputFilterField("Марка", &_brand);
 	InputFilterField("Год", &_year);
-	InputFilterField("Цена", &_price);
+	InputFilterField("Максимальная цена", &_price);
 	InputFilterField("Местоположение", &_location);
-
-	while (getchar() != '\n');
 }
 
 AdvertisementList SearchData::SortAdvertisementList(AdvertisementList list)
 {
 	AdvertisementList newlist;
 
-	int counter;
+	int counter = 0;
 
 	for (Advertisement advertisement : list) {
 		CompareSearchData(advertisement.GetCar().GetBrand() == _brand || _brand == "", &counter);
 		CompareSearchData(advertisement.GetCar().GetYear() == _year || _year == -1, &counter);
-		CompareSearchData(advertisement.GetPrice() == _price || _price == -1, &counter);
+		CompareSearchData(advertisement.GetPrice() <= _price || _price == -1, &counter);
 		CompareSearchData(advertisement.GetLocation() == _location || _location == "", &counter);
 
 		if (counter == COMPARES_TARGET) {
 			newlist.push_back(advertisement);
 		}
+
+		counter = 0;
 	}
 
 	return newlist;
@@ -384,6 +430,6 @@ void SearchData::PrintSearchData()
 	cout << "----- Параметры поиска -----" << endl << endl;
 	cout << "Марка: " << brand << endl;
 	cout << "Год: " << year << endl;
-	cout << "Цена: " << price << endl;
+	cout << "Максимальная цена: " << price << endl;
 	cout << "Местоположение: " << location << endl;
 }
