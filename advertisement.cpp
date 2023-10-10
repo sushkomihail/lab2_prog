@@ -1,13 +1,58 @@
 #include "advertisement.h"
 
-void InputLoginPassword(string* login, int* password) {
+void InputLogin(string* login) {
 	cout << "Введите логин: ";
 	cin >> *login;
+}
+
+void InputPassword(string* password) {
 	cout << "Введите пароль: ";
 	cin >> *password;
 }
 
-User InitUser(string login, int password, int phoneNumber)
+bool IsNumber(string string) {
+	for (char symbol : string) {
+		if (symbol < '0' || symbol > '9') {
+			return false;
+		}
+	}
+
+	return true;
+}
+
+void InputIntField(string request, int* destination)
+{
+	string value;
+
+	do {
+		cout << request;
+		cin >> value;
+		while (getchar() != '\n');
+	} while (!IsNumber(value));
+
+	*destination = stoi(value);
+}
+
+bool InputBoolField(string question)
+{
+	int command;
+
+	do {
+		InputIntField(question, &command);
+	} while (command != 0 && command != 1);
+
+	return command == 1;
+}
+
+void InputPhoneNumber(string* phoneNumber) {
+	do {
+		cout << "Введите номер телефона: ";
+		cin >> *phoneNumber;
+		while (getchar() != '\n');
+	} while (!IsNumber(*phoneNumber));
+}
+
+User InitUser(string login, string password, string phoneNumber)
 {
 	User user;
 	user.Login = login;
@@ -19,13 +64,12 @@ User InitUser(string login, int password, int phoneNumber)
 
 void CreateNewUser(UserList* users)
 {
-	string login;
-	int password, phoneNumber;
+	string login, password, phoneNumber;
 
 	cout << "Регистрация\n\n";
-	InputLoginPassword(&login, &password);
-	cout << "Введите номер телефона: ";
-	cin >> phoneNumber;
+	InputLogin(&login);
+	InputPassword(&password);
+	InputPhoneNumber(&phoneNumber);
 
 	while (getchar() != '\n');
 
@@ -34,12 +78,10 @@ void CreateNewUser(UserList* users)
 
 bool EnterToSystem(UserList users, User* user)
 {
-	string login;
-	int password;
+	string login, password;
 
-	InputLoginPassword(&login, &password);
-
-	while (getchar() != '\n');
+	InputLogin(&login);
+	InputPassword(&password);
 
 	for (User createdUser : users) {
 		if (createdUser.Login == login && createdUser.Password == password) {
@@ -70,16 +112,11 @@ Car CreateNewCar()
 
 	cout << "Марка: ";
 	getline(cin, brand);
-	cout << "Год производства: ";
-	cin >> year;
-	cout << "Мощность двигателя: ";
-	cin >> enginePower;
+	InputIntField("Год производства: ", &year);
+	InputIntField("Мощность двигателя: ", &enginePower);
 	cout << "Тип КПП: ";
 	cin >> transmission;
-	cout << "Пробег: ";
-	cin >> mileage;
-
-	while (getchar() != '\n');
+	InputIntField("Пробег: ", &mileage);
 
 	return InitCar(brand, year, enginePower, transmission, mileage);
 }
@@ -109,16 +146,10 @@ Report CreateNewReport()
 {
 	int crashesCount, isListedAsWanted, areDocumentsInOrder, isRegistered;
 
-	cout << "Количество аварий: ";
-	cin >> crashesCount;
-	cout << "Находится в розыске?(1-да, 0-нет): ";
-	cin >> isListedAsWanted;
-	cout << "Документы в порядке?(1-да, 0-нет): ";
-	cin >> areDocumentsInOrder;
-	cout << "Зарегистрирована?(1-да, 0-нет): ";
-	cin >> isRegistered;
-
-	while (getchar() != '\n');
+	InputIntField("Количество аварий: ", &crashesCount);
+	isListedAsWanted = InputBoolField("Находится в розыске?(1-да, 0-нет): ");
+	areDocumentsInOrder = InputBoolField("Документы в порядке?(1-да, 0-нет): ");
+	isRegistered = InputBoolField("Зарегистрирована?(1-да, 0-нет): ");
 
 	return InitReport(crashesCount, isListedAsWanted, areDocumentsInOrder, isRegistered);
 }
@@ -135,10 +166,17 @@ void PrintReportData(Report report)
 	cout << registration << endl;
 }
 
-Advertisement InitAdvertisement(int index, Car car, Report report, string location, int price, User seller)
+int Advertisement::ID = 0;
+
+void AssignID(Advertisement* advertisement)
+{
+	advertisement->CurrentID = advertisement->ID++;
+}
+
+Advertisement InitAdvertisement(Car car, Report report, string location, int price, User seller)
 {
 	Advertisement advertisement;
-	advertisement.Index = index;
+	AssignID(&advertisement);
 	advertisement.Car = car;
 	advertisement.Report = report;
 	advertisement.Location = location;
@@ -158,12 +196,10 @@ Advertisement CreateNewAdvertisement(User user, AdvertisementList* advertisement
 
 	cout << "Местоположение: ";
 	cin >> location;
-	cout << "Цена: ";
-	cin >> price;
+	InputIntField("Цена: ", &price);
 
-	while (getchar() != '\n');
-
-	Advertisement advertisement = InitAdvertisement(advertisements->size(), car, report, location, price, user);
+	Advertisement advertisement = InitAdvertisement(car, report, location, price, user);
+	AssignID(&advertisement);
 	advertisements->push_back(advertisement);
 
 	return advertisement;
@@ -192,24 +228,10 @@ SearchData InitSearchData(string brand, int year, int price, string location)
 	return data;
 }
 
-bool CanEnterFilterField(string question) {
-	int command;
-
-	do {
-		cout << question;
-		cin >> command;
-	} while (command != 0 && command != 1);
-
-	while (getchar() != '\n');
-
-	return command == 1;
-}
-
 void InputFilterField(string title, int* destination) {
 	string question = "Поле '" + title + "'(1 - ввести, 0 - пропустить): ";
-	if (CanEnterFilterField(question)) {
-		cout << title + ": ";
-		cin >> *destination;
+	if (InputBoolField(question)) {
+		InputIntField(title + ": ", destination);
 	}
 	else {
 		*destination = -1;
@@ -218,9 +240,10 @@ void InputFilterField(string title, int* destination) {
 
 void InputFilterField(string title, string* destination) {
 	string question = "Поле '" + title + "'(1 - ввести, 0 - пропустить): ";
-	if (CanEnterFilterField(question)) {
+	if (InputBoolField(question)) {
 		cout << title + ": ";
 		cin >> *destination;
+		while (getchar() != '\n');
 	}
 }
 
@@ -234,8 +257,6 @@ SearchData CreateNewSearchData()
 	InputFilterField("Год", &year);
 	InputFilterField("Цена", &price);
 	InputFilterField("Местоположение", &location);
-
-	while (getchar() != '\n');
 
 	return InitSearchData(brand, year, price, location);
 }
@@ -271,7 +292,7 @@ void PrintAdvertisements(AdvertisementList advertisements)
 void DeleteAdvertisement(User user, AdvertisementList* advertisements, Advertisement advertisement)
 {
 	if (advertisement.Seller.Login == user.Login && advertisement.Seller.Password == user.Password) {
-		advertisements->erase(advertisements->begin() + advertisement.Index);
+		advertisements->erase(advertisements->begin() + advertisement.CurrentID);
 		cout << "Объявление успешно удалено!" << endl;
 		return;
 	}
@@ -292,18 +313,19 @@ AdvertisementList SortedAdvertisements(AdvertisementList advertisements, SearchD
 {
 	AdvertisementList list;
 
-	int counter;
-	int counterTarget = 4;
+	int counter = 0;
 
 	for (Advertisement advertisement : advertisements) {
 		CompareSearchData(advertisement.Car.Brand == data.Brand || data.Brand == "", &counter);
 		CompareSearchData(advertisement.Car.Year == data.Year || data.Year == -1, &counter);
-		CompareSearchData(advertisement.Price == data.Price || data.Price == -1, &counter);
+		CompareSearchData(advertisement.Price <= data.Price || data.Price == -1, &counter);
 		CompareSearchData(advertisement.Location == data.Location || data.Location == "", &counter);
 
-		if (counter == counterTarget) {
+		if (counter == data.COUNTER_TARGET) {
 			list.push_back(advertisement);
 		}
+
+		counter = 0;
 	}
 
 	return list;

@@ -7,11 +7,15 @@
 using namespace std;
 
 struct Advertisement;
+struct User;
+
+typedef vector<User> UserList;
+typedef vector<Advertisement> AdvertisementList;
 
 struct User {
 	string Login;
-	int Password;
-	int PhoneNumber;
+	string Password;
+	string PhoneNumber;
 	vector<Advertisement> Favourites;
 };
 
@@ -31,7 +35,8 @@ struct Report {
 };
 
 struct Advertisement {
-	int Index;
+	static int ID;
+	int CurrentID;
 	Car Car;
 	Report Report;
 	string Location;
@@ -40,16 +45,14 @@ struct Advertisement {
 };
 
 struct SearchData {
+	const int COUNTER_TARGET = 4;
 	string Brand;
 	int Year;
 	int Price;
 	string Location;
 };
 
-typedef vector<User> UserList;
-typedef vector<Advertisement> AdvertisementList;
-
-User InitUser(string login, int password, int phoneNumber);
+User InitUser(string login, string password, string phoneNumber);
 
 void CreateNewUser(UserList* users);
 
@@ -67,7 +70,9 @@ Report CreateNewReport();
 
 void PrintReportData(Report report);
 
-Advertisement InitAdvertisement(int index, Car car, Report report, string location, int price, User seller);
+void AssignID(Advertisement* advertisement);
+
+Advertisement InitAdvertisement(Car car, Report report, string location, int price, User seller);
 
 Advertisement CreateNewAdvertisement(User user, AdvertisementList* advertisements);
 
