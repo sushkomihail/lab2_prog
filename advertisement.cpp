@@ -291,13 +291,20 @@ void PrintAdvertisements(AdvertisementList advertisements)
 
 void DeleteAdvertisement(User user, AdvertisementList* advertisements, Advertisement advertisement)
 {
-	if (advertisement.Seller.Login == user.Login && advertisement.Seller.Password == user.Password) {
-		advertisements->erase(advertisements->begin() + advertisement.CurrentID);
-		cout << "Объявление успешно удалено!" << endl;
+	if (advertisement.Seller.Login != user.Login || advertisement.Seller.Password != user.Password) {
+		cout << "Данное объявление Вам не принадлежит, Вы не можете его удалить!" << endl;
 		return;
 	}
 
-	cout << "Данное объявление Вам не принадлежит, Вы не можете его удалить!" << endl;
+	for (int i = 0; i < advertisements->size(); i++) {
+		if (advertisements->at(i).CurrentID == advertisement.CurrentID) {
+			advertisements->erase(advertisements->begin() + i);
+			cout << "Объявление успешно удалено!" << endl;
+			return;
+		}
+	}
+
+	cout << "Данного объявления нет в списке!";
 }
 
 void AddToFavourites(User* user, Advertisement advertisement)
