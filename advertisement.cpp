@@ -146,13 +146,20 @@ void Advertisement::Create(User user, AdvertisementList* advertisements)
 
 void Advertisement::Delete(User user, AdvertisementList* advertisements)
 {
-	if (_seller.GetLogin() == user.GetLogin() && _seller.GetPassword() == user.GetPassword()) {
-		advertisements->erase(advertisements->begin() + _currentId);
-		cout << "Объявление успешно удалено!" << endl;
+	if (_seller.GetLogin() != user.GetLogin() || _seller.GetPassword() != user.GetPassword()) {
+		cout << "Данное объявление Вам не принадлежит, Вы не можете его удалить!" << endl;
 		return;
 	}
 
-	cout << "Данное объявление Вам не принадлежит, Вы не можете его удалить!" << endl;
+	for (int i = 0; i < advertisements->size(); i++) {
+		if (advertisements->at(i).GetID() == _currentId) {
+			advertisements->erase(advertisements->begin() + i);
+			cout << "Объявление успешно удалено!" << endl;
+			return;
+		}
+	}
+
+	cout << "Данного объявления нет в списке!";
 }
 
 void Advertisement::PrintAdvertisementData()
