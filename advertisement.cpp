@@ -34,6 +34,12 @@ bool InputBoolField(string question)
 	return command == 1;
 }
 
+void ChangePassword(User &user)
+{
+	cout << "----- Смена пароля -----" << endl;
+	cin >> user._password;
+}
+
 bool EnterToSystem(UserList users, User* user)
 {
 	User enteredUser;

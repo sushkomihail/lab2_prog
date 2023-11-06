@@ -13,6 +13,8 @@ typedef vector<Advertisement> AdvertisementList;
 typedef vector<User> UserList;
 
 class User {
+	friend void ChangePassword(User& user);
+
 private:
 	string _login;
 	string _password;
@@ -155,6 +157,8 @@ public:
 
 	void PrintSearchData();
 };
+
+void ChangePassword(User &user);
 
 bool EnterToSystem(UserList users, User* user);
 
