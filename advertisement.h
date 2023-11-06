@@ -136,7 +136,7 @@ private:
 	int _price;
 	string _location;
 
-	void CompareSearchData(bool expression, int* counter);
+	void CompareSearchData(bool expression, int& counter);
 
 	void InputFilterField(string title, int* destination);
 

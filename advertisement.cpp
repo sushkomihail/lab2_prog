@@ -354,9 +354,9 @@ void Report::PrintReportData()
 	cout << registration << endl;
 }
 
-void SearchData::CompareSearchData(bool expression, int* counter)
+void SearchData::CompareSearchData(bool expression, int& counter)
 {
-	if (expression) *counter += 1;
+	if (expression) counter += 1;
 }
 
 void SearchData::InputFilterField(string request, int* destination)
@@ -417,10 +417,10 @@ AdvertisementList SearchData::SortAdvertisementList(AdvertisementList list)
 	int counter = 0;
 
 	for (Advertisement advertisement : list) {
-		CompareSearchData(advertisement.GetCar().GetBrand() == _brand || _brand == "", &counter);
-		CompareSearchData(advertisement.GetCar().GetYear() == _year || _year == -1, &counter);
-		CompareSearchData(advertisement.GetPrice() <= _price || _price == -1, &counter);
-		CompareSearchData(advertisement.GetLocation() == _location || _location == "", &counter);
+		CompareSearchData(advertisement.GetCar().GetBrand() == _brand || _brand == "", counter);
+		CompareSearchData(advertisement.GetCar().GetYear() == _year || _year == -1, counter);
+		CompareSearchData(advertisement.GetPrice() <= _price || _price == -1, counter);
+		CompareSearchData(advertisement.GetLocation() == _location || _location == "", counter);
 
 		if (counter == COMPARES_TARGET) {
 			newlist.push_back(advertisement);
