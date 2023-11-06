@@ -119,6 +119,8 @@ public:
 
 	User GetSeller();
 
+	static int GetCount();
+
 	void Create(User user, AdvertisementList* advertisements);
 
 	void Delete(User user, AdvertisementList* advertisements);

@@ -27,10 +27,27 @@ void DynamicArrayWithObjects() {
     delete[] reports;
 }
 
+void StaticField() {
+    Advertisement advs[]{Advertisement(Car("toyota")), Advertisement(Car("nissan")), Advertisement(Car("subaru"))};
+    
+    cout << "----- Пример работы со статическим полем -----" << endl;
+    for (Advertisement adv : advs) {
+        cout << "Объявление(" + adv.GetCar().GetBrand() + "); id - " << adv.GetID() << endl;
+    }
+}
+
+void StaticVoid() {
+    cout << "----- Пример работы со статическим методом -----" << endl;
+    cout << "Количество объявлений - " << Advertisement::GetCount() << endl;
+}
+
 int main()
 {
     setlocale(LC_ALL, "rus");
 
-    ArrayWithDynamicObjects();
-    DynamicArrayWithObjects();
+    //ArrayWithDynamicObjects();
+    //DynamicArrayWithObjects();
+
+    StaticField();
+    StaticVoid();
 }

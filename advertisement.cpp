@@ -127,6 +127,11 @@ User Advertisement::GetSeller()
 	return _seller;
 }
 
+int Advertisement::GetCount()
+{
+	return _id;
+}
+
 void Advertisement::Create(User user, AdvertisementList* advertisements)
 {
 	Car car;
