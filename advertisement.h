@@ -64,6 +64,8 @@ public:
 
 	Car();
 
+	Car operator+(const Car& car);
+
 	string GetBrand();
 
 	int GetYear();
@@ -150,6 +152,12 @@ public:
 	SearchData(string brand);
 
 	SearchData();
+
+	SearchData(const SearchData& data);
+
+	SearchData& operator++();
+
+	SearchData& operator++(int value);
 
 	void Create();
 

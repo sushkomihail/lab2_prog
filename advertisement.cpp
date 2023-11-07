@@ -291,6 +291,14 @@ Car::Car()
 	_mileage = 0;
 }
 
+Car Car::operator+(const Car& car)
+{
+	Car tmp;
+	tmp._enginePower += car._enginePower;
+	tmp._mileage += car._mileage;
+	return tmp;
+}
+
 string Car::GetBrand()
 {
 	return _brand;
@@ -405,6 +413,29 @@ SearchData::SearchData()
 {
 	_year = 0;
 	_price = 0;
+}
+
+SearchData::SearchData(const SearchData &data)
+{
+	_brand = data._brand;
+	_year = data._year;
+	_price = data._price;
+	_location = data._location;
+}
+
+SearchData& SearchData::operator++()
+{
+	_year++;
+	_price++;
+	return *this;
+}
+
+SearchData& SearchData::operator++(int value)
+{
+	SearchData tmp(*this);
+	_year++;
+	_price++;
+	return tmp;
 }
 
 void SearchData::Create()
