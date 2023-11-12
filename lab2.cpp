@@ -48,6 +48,19 @@ int main()
     //ArrayWithDynamicObjects();
     //DynamicArrayWithObjects();
 
-    StaticField();
-    StaticVoid();
+    //StaticField();
+    //StaticVoid();
+
+    /*SearchData data;
+    data.Create();
+    data.PrintSearchData();*/
+
+    /*User user("mihail");
+    AdvertisementList list;
+    Advertisement adv;
+    adv.Create(user, &list);
+    cout << "\nКоличество объявлений: " << list.size() << endl;*/
+
+    User user("mihail", "123h45", "88888888888");
+    ChangePassword(user);
 }

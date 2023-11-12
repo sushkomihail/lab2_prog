@@ -37,7 +37,10 @@ bool InputBoolField(string question)
 void ChangePassword(User &user)
 {
 	cout << "----- Смена пароля -----" << endl;
+	cout << "Предыдущий пароль: " + user._password << endl;
+	cout << "Введите новый пароль: ";
 	cin >> user._password;
+	cout << "Новый пароль: " + user._password << endl;
 }
 
 bool EnterToSystem(UserList users, User* user)
