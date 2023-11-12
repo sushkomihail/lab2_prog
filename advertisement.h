@@ -153,11 +153,9 @@ public:
 
 	SearchData();
 
-	SearchData(const SearchData& data);
-
 	SearchData& operator++();
 
-	SearchData& operator++(int value);
+	SearchData operator++(int value);
 
 	void Create();
 

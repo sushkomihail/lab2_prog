@@ -421,14 +421,6 @@ SearchData::SearchData()
 	_price = 0;
 }
 
-SearchData::SearchData(const SearchData &data)
-{
-	_brand = data._brand;
-	_year = data._year;
-	_price = data._price;
-	_location = data._location;
-}
-
 SearchData& SearchData::operator++()
 {
 	_year++;
@@ -436,11 +428,10 @@ SearchData& SearchData::operator++()
 	return *this;
 }
 
-SearchData& SearchData::operator++(int value)
+SearchData SearchData::operator++(int)
 {
 	SearchData tmp(*this);
-	_year++;
-	_price++;
+	++(*this);
 	return tmp;
 }
 
