@@ -61,6 +61,15 @@ int main()
     adv.Create(user, &list);
     cout << "\nКоличество объявлений: " << list.size() << endl;*/
 
-    User user("mihail", "123h45", "88888888888");
-    ChangePassword(user);
+    //User user("mihail", "123h45", "88888888888");
+    //ChangePassword(user);
+
+    Car car1("toyota", 2004, 200, "auto", 100000);
+    Car car2("nissan", 2000, 280, "manual", 150000);
+    car1.PrintCarData();
+    cout << endl;
+    car2.PrintCarData();
+    cout << endl;
+    Car car3 = car1 + car2;
+    car3.PrintCarData();
 }

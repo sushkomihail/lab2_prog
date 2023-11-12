@@ -297,8 +297,11 @@ Car::Car()
 Car Car::operator+(const Car& car)
 {
 	Car tmp;
-	tmp._enginePower += car._enginePower;
-	tmp._mileage += car._mileage;
+	tmp._brand = _brand + car._brand;
+	tmp._year = _year + car._year;
+	tmp._enginePower = _enginePower + car._enginePower;
+	tmp._transmission = _transmission + car._transmission;
+	tmp._mileage = _enginePower + car._mileage;
 	return tmp;
 }
 
