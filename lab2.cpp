@@ -48,6 +48,6 @@ int main()
     //ArrayWithDynamicObjects();
     //DynamicArrayWithObjects();
 
-    //StaticField();
-    //StaticVoid();
+    StaticField();
+    StaticVoid();
 }

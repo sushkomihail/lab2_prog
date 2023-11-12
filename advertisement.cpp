@@ -368,7 +368,7 @@ void Report::PrintReportData()
 	cout << registration << endl;
 }
 
-void SearchData::CompareSearchData(bool expression, int& counter)
+void SearchData::CompareSearchData(bool expression, int* counter)
 {
 	if (expression) counter += 1;
 }
@@ -384,12 +384,12 @@ void SearchData::InputFilterField(string request, int* destination)
 	}
 }
 
-void SearchData::InputFilterField(string request, string* destination)
+void SearchData::InputFilterField(string request, string& destination)
 {
 	string question = "Поле '" + request + "'(1 - ввести, 0 - пропустить): ";
 	if (InputBoolField(question)) {
 		cout << request + ": ";
-		cin >> *destination;
+		cin >> destination;
 		while (getchar() != '\n');
 	}
 }
@@ -441,10 +441,10 @@ SearchData& SearchData::operator++(int value)
 void SearchData::Create()
 {
 	cout << "----- Фильтр -----" << endl << endl;
-	InputFilterField("Марка", &_brand);
+	InputFilterField("Марка", _brand);
 	InputFilterField("Год", &_year);
 	InputFilterField("Максимальная цена", &_price);
-	InputFilterField("Местоположение", &_location);
+	InputFilterField("Местоположение", _location);
 }
 
 AdvertisementList SearchData::SortAdvertisementList(AdvertisementList list)
@@ -454,10 +454,10 @@ AdvertisementList SearchData::SortAdvertisementList(AdvertisementList list)
 	int counter = 0;
 
 	for (Advertisement advertisement : list) {
-		CompareSearchData(advertisement.GetCar().GetBrand() == _brand || _brand == "", counter);
-		CompareSearchData(advertisement.GetCar().GetYear() == _year || _year == -1, counter);
-		CompareSearchData(advertisement.GetPrice() <= _price || _price == -1, counter);
-		CompareSearchData(advertisement.GetLocation() == _location || _location == "", counter);
+		CompareSearchData(advertisement.GetCar().GetBrand() == _brand || _brand == "", &counter);
+		CompareSearchData(advertisement.GetCar().GetYear() == _year || _year == -1, &counter);
+		CompareSearchData(advertisement.GetPrice() <= _price || _price == -1, &counter);
+		CompareSearchData(advertisement.GetLocation() == _location || _location == "", &counter);
 
 		if (counter == COMPARES_TARGET) {
 			newlist.push_back(advertisement);

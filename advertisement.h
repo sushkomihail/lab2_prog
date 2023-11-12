@@ -140,11 +140,11 @@ private:
 	int _price;
 	string _location;
 
-	void CompareSearchData(bool expression, int& counter);
+	void CompareSearchData(bool expression, int* counter);
 
 	void InputFilterField(string title, int* destination);
 
-	void InputFilterField(string title, string* destination);
+	void InputFilterField(string title, string& destination);
 
 public:
 	SearchData(string brand, int year, int price, string location);
