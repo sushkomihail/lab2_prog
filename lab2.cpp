@@ -30,7 +30,7 @@ void DynamicArrayWithObjects() {
 void StaticField() {
     Advertisement advs[]{Advertisement(Car("toyota")), Advertisement(Car("nissan")), Advertisement(Car("subaru"))};
     
-    cout << "----- Пример работы со статическим полем -----" << endl;
+    //cout << "----- Пример работы со статическим полем -----" << endl;
     for (Advertisement adv : advs) {
         cout << "Объявление(" + adv.GetCar().GetBrand() + "); id - " << adv.GetID() << endl;
     }
@@ -55,9 +55,34 @@ void TryCatch() {
     }
 }
 
+void TwoDimensionalArray() {
+    Car cars[2][2]{ { Car("toyota"), Car("mazda") }, { Car("nissan"), Car("honda") } };
+
+    for (int i = 0; i < 2; i++) {
+        for (int j = 0; j < 2; j++) {
+            cout << cars[i][j].GetBrand() << "\t";
+        }
+        cout << endl;
+    }
+
+    cout << endl << "Элеметы главной диагонали: ";
+
+    for (int i = 0; i < 2; i++) {
+        cout << cars[i][i].GetBrand() << "  ";
+    }
+    cout << endl;
+}
+
 int main()
 {
     setlocale(LC_ALL, "rus");
 
-    TryCatch();
+    //cout << "Try-catch:" << endl;
+    //TryCatch();
+
+    cout << "Одномерный массив:" << endl;
+    StaticField();
+
+    cout << "Двумерный массив:" << endl;
+    TwoDimensionalArray();
 }

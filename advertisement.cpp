@@ -290,16 +290,15 @@ void User::InputPhoneNumber()
 void User::Create()
 {
 	cout << "----- Регистрация -----\n\n";
-	
-	InputLogin();
-	InputPassword();
-	InputPhoneNumber();
 
 	ofstream file;
 
 	try
 	{
 		file.open(UsersBase, ofstream::app);
+		InputLogin();
+		InputPassword();
+		InputPhoneNumber();
 		file << this->_login << ';' << this->_password << ';' << this->_phoneNumber << ';' << endl;
 	}
 	catch (const exception& ex)
