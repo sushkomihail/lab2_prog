@@ -108,8 +108,7 @@ bool EnterToSystem(UserList users, User* user)
 void PrintAdvertisements(AdvertisementList advertisements)
 {
 	if (advertisements.size() == 0) {
-		cout << "Объявлений нет!" << endl;
-		return;
+		throw exception("Объявлений нет!");
 	}
 
 	for (Advertisement advertisement : advertisements)
@@ -322,7 +321,13 @@ void User::PrintUserData()
 	cout << "Логин: " + _login << endl;
 	cout << "Номер телефона: " << _phoneNumber << endl;
 	cout << "Избранные объявления: " << endl;
-	PrintAdvertisements(_favourites);
+
+	try {
+		PrintAdvertisements(_favourites);
+	}
+	catch (const exception& ex) {
+		cout << ex.what() << endl;
+	}
 }
 
 Car::Car(string brand, int year, int enginePower, string transmission, int mileage)
@@ -437,6 +442,7 @@ void SearchData::CompareSearchData(bool expression, int* counter)
 void SearchData::InputFilterField(string request, int* destination)
 {
 	string question = "Поле '" + request + "'(1 - ввести, 0 - пропустить): ";
+
 	if (InputBoolField(question)) {
 		InputIntField(request + ": ", destination);
 	}

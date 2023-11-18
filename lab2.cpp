@@ -77,12 +77,12 @@ int main()
 {
     setlocale(LC_ALL, "rus");
 
-    //cout << "Try-catch:" << endl;
-    //TryCatch();
+    /*cout << "Try-catch:" << endl;
+    TryCatch();*/
 
     cout << "Одномерный массив:" << endl;
     StaticField();
 
-    cout << "Двумерный массив:" << endl;
+    cout << "\nДвумерный массив:" << endl;
     TwoDimensionalArray();
 }
