@@ -41,46 +41,23 @@ void StaticVoid() {
     cout << "Количество объявлений - " << Advertisement::GetCount() << endl;
 }
 
+void TryCatch() {
+    User user;
+    user.Create();
+    user.Create();
+
+    UserList list = GetUserList();
+
+    cout << endl;
+
+    for (User user : list) {
+        cout << "Логин: " << user.GetLogin() << "; Пароль: " << user.GetPassword() << "; Телефон: " << user.GetPhoneNumber() << endl;
+    }
+}
+
 int main()
 {
     setlocale(LC_ALL, "rus");
 
-    //ArrayWithDynamicObjects();
-    //DynamicArrayWithObjects();
-
-    //StaticField();
-    //StaticVoid();
-
-    /*SearchData data;
-    data.Create();
-    data.PrintSearchData();*/
-
-    /*User user("mihail");
-    AdvertisementList list;
-    Advertisement adv;
-    adv.Create(user, &list);
-    cout << "\nКоличество объявлений: " << list.size() << endl;*/
-
-    //User user("mihail", "123h45", "88888888888");
-    //ChangePassword(user);
-
-    /*Car car1("toyota", 2004, 200, "auto", 100000);
-    Car car2("nissan", 2000, 280, "manual", 150000);
-    car1.PrintCarData();
-    cout << endl;
-    car2.PrintCarData();
-    cout << endl;
-    Car car3 = car1 + car2;
-    car3.PrintCarData();*/
-
-    SearchData data("toyota", 2004, 200000, "barnaul");
-    cout << "data" << endl;
-    data.PrintSearchData();
-    cout << endl;
-    SearchData data1 = data++;
-    cout << "data1" << endl;
-    data1.PrintSearchData();
-    cout << endl;
-    cout << "data" << endl;
-    data.PrintSearchData();
+    TryCatch();
 }

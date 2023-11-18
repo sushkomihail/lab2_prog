@@ -43,6 +43,49 @@ void ChangePassword(User &user)
 	cout << "Новый пароль: " + user._password << endl;
 }
 
+vector<string> SplitString(string str)
+{
+	vector<string> result;
+	string word = "";
+
+	for (char symbol : str) {
+		if (symbol != ';') {
+			word += symbol;
+		}
+		else {
+			result.push_back(word);
+			word = "";
+		}
+	}
+
+	return result;
+}
+
+UserList GetUserList()
+{
+	UserList users;
+
+	ifstream file;
+
+	try
+	{
+		file.open(UsersBase);
+
+		for (string line; getline(file, line);) {
+			vector<string> userData = SplitString(line);
+			users.push_back(User(userData[0], userData[1], userData[2]));
+		}
+	}
+	catch (const exception& ex)
+	{
+		cout << "Не удалось прочитать данные из файла!" << endl;
+		cout << ex.what() << endl;
+	}
+
+	file.close();
+	return users;
+}
+
 bool EnterToSystem(UserList users, User* user)
 {
 	User enteredUser;
@@ -244,7 +287,7 @@ void User::InputPhoneNumber()
 	} while (!IsNumber(_phoneNumber));
 }
 
-void User::Create(UserList* users)
+void User::Create()
 {
 	cout << "----- Регистрация -----\n\n";
 	
@@ -252,7 +295,20 @@ void User::Create(UserList* users)
 	InputPassword();
 	InputPhoneNumber();
 
-	users->push_back(*this);
+	ofstream file;
+
+	try
+	{
+		file.open(UsersBase, ofstream::app);
+		file << this->_login << ';' << this->_password << ';' << this->_phoneNumber << ';' << endl;
+	}
+	catch (const exception& ex)
+	{
+		cout << "Не удалось записать пользователя в базу!" << endl;
+		cout << ex.what() << endl;
+	}
+
+	file.close();
 }
 
 void User::AddToFavourites(Advertisement advertisement)

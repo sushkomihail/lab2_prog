@@ -3,6 +3,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <fstream>
 
 using namespace std;
 
@@ -42,7 +43,7 @@ public:
 
 	void InputPhoneNumber();
 
-	void Create(UserList* users);
+	void Create();
 
 	void AddToFavourites(Advertisement advertisement);
 
@@ -164,7 +165,13 @@ public:
 	void PrintSearchData();
 };
 
+const string UsersBase = "users.txt";
+
 void ChangePassword(User &user);
+
+vector<string> SplitString(string string);
+
+UserList GetUserList();
 
 bool EnterToSystem(UserList users, User* user);
 
