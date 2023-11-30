@@ -547,6 +547,25 @@ Truck::Truck(string brand, int year, int enginePower, string transmission, int m
 	_loadCapacity = loadCapacity;
 }
 
+Truck::Truck()
+{
+	_loadCapacity = 0;
+}
+
+Truck& Truck::operator=(const Car& car)
+{
+	if (&car != this) {
+		Truck tmp = (Truck&)car;
+		_brand = tmp._brand;
+		_year = tmp._year;
+		_enginePower = tmp._enginePower;
+		_transmission = tmp._transmission;
+		_mileage = tmp._mileage;
+	}
+
+	return *this;
+}
+
 void Truck::Create()
 {
 	Car::Create();

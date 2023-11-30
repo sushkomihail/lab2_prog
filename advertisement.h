@@ -82,6 +82,8 @@ private:
 
 public:
 	Truck(string brand, int year, int enginePower, string transmission, int mileage, int loadCapacity);
+	Truck();
+	Truck& operator=(const Car& car);
 	void Create();
 	void PrintCarData();
 };
