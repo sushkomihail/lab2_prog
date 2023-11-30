@@ -540,3 +540,21 @@ void SearchData::PrintSearchData()
 	cout << "Максимальная цена: " << price << endl;
 	cout << "Местоположение: " << location << endl;
 }
+
+Truck::Truck(string brand, int year, int enginePower, string transmission, int mileage, int loadCapacity) :
+	Car(brand, year, enginePower, transmission, mileage)
+{
+	_loadCapacity = loadCapacity;
+}
+
+void Truck::Create()
+{
+	Car::Create();
+	InputIntField("Грузоподъемность: ", &_loadCapacity);
+}
+
+void Truck::PrintCarData()
+{
+	cout << "Марка: " + _brand << endl;
+	cout << "Грузоподъемность: " << _loadCapacity << endl;
+}

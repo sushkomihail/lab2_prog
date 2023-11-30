@@ -77,8 +77,13 @@ int main()
 {
     setlocale(LC_ALL, "rus");
 
-    /*cout << "Try-catch:" << endl;
-    TryCatch();*/
+    cout << "Try-catch:" << endl;
+    User user("mihail", "12345", "90394534");
+    user.PrintUserData();
+    cout << endl;
+    user.AddToFavourites(Advertisement(Car("honda")));
+    cout << endl;
+    user.PrintUserData();
 
     cout << "Одномерный массив:" << endl;
     StaticField();

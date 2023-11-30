@@ -51,7 +51,7 @@ public:
 };
 
 class Car {
-private:
+protected:
 	string _brand;
 	int _year;
 	int _enginePower;
@@ -71,8 +71,18 @@ public:
 
 	int GetYear();
 
-	void Create();
+	virtual void Create();
 
+	virtual void PrintCarData();
+};
+
+class Truck : public Car {
+private:
+	int _loadCapacity;
+
+public:
+	Truck(string brand, int year, int enginePower, string transmission, int mileage, int loadCapacity);
+	void Create();
 	void PrintCarData();
 };
 
