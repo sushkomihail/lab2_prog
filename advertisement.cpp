@@ -375,6 +375,11 @@ int Car::GetYear()
 	return _year;
 }
 
+int Car::GetMileage()
+{
+	return _mileage;
+}
+
 void Car::Create()
 {
 	cout << "Марка: ";
@@ -461,27 +466,6 @@ void SearchData::InputFilterField(string request, string& destination)
 	}
 }
 
-SearchData::SearchData(string brand, int year, int price, string location)
-{
-	_brand = brand;
-	_year = year;
-	_price = price;
-	_location = location;
-}
-
-SearchData::SearchData(string brand)
-{
-	_brand = brand;
-	_year = 0;
-	_price = 0;
-}
-
-SearchData::SearchData()
-{
-	_year = 0;
-	_price = 0;
-}
-
 SearchData& SearchData::operator++()
 {
 	_year++;
@@ -496,32 +480,16 @@ SearchData SearchData::operator++(int)
 	return tmp;
 }
 
-void SearchData::Create()
-{
-	cout << "----- Фильтр -----" << endl << endl;
-	InputFilterField("Марка", _brand);
-	InputFilterField("Год", &_year);
-	InputFilterField("Максимальная цена", &_price);
-	InputFilterField("Местоположение", _location);
-}
-
 AdvertisementList SearchData::SortAdvertisementList(AdvertisementList list)
 {
 	AdvertisementList newlist;
 
-	int counter = 0;
-
 	for (Advertisement advertisement : list) {
-		CompareSearchData(advertisement.GetCar().GetBrand() == _brand || _brand == "", &counter);
-		CompareSearchData(advertisement.GetCar().GetYear() == _year || _year == -1, &counter);
-		CompareSearchData(advertisement.GetPrice() <= _price || _price == -1, &counter);
-		CompareSearchData(advertisement.GetLocation() == _location || _location == "", &counter);
+		int count = GetComparesCount(advertisement);
 
-		if (counter == COMPARES_TARGET) {
+		if (count == _comparesTarget) {
 			newlist.push_back(advertisement);
 		}
-
-		counter = 0;
 	}
 
 	return newlist;
@@ -576,4 +544,73 @@ void Truck::PrintCarData()
 {
 	cout << "Марка: " + _brand << endl;
 	cout << "Грузоподъемность: " << _loadCapacity << endl;
+}
+
+BaseSearchData::BaseSearchData(string brand, int year, int price, string location)
+{
+	_brand = brand;
+	_year = year;
+	_price = price;
+	_location = location;
+	_comparesTarget = 4;
+}
+
+BaseSearchData::BaseSearchData(string brand)
+{
+	_brand = brand;
+	_year = 0;
+	_price = 0;
+	_comparesTarget = 4;
+}
+
+BaseSearchData::BaseSearchData()
+{
+	_year = 0;
+	_price = 0;
+	_comparesTarget = 4;
+}
+
+void BaseSearchData::Create()
+{
+	cout << "----- Фильтр -----" << endl << endl;
+	InputFilterField("Марка", _brand);
+	InputFilterField("Год", &_year);
+	InputFilterField("Максимальная цена", &_price);
+	InputFilterField("Местоположение", _location);
+}
+
+int BaseSearchData::GetComparesCount(Advertisement advertisement)
+{
+	int count = 0;
+	CompareSearchData(advertisement.GetCar().GetBrand() == _brand || _brand == "", &count);
+	CompareSearchData(advertisement.GetCar().GetYear() == _year || _year == -1, &count);
+	CompareSearchData(advertisement.GetPrice() <= _price || _price == -1, &count);
+	CompareSearchData(advertisement.GetLocation() == _location || _location == "", &count);
+	return count;
+}
+
+ExtensiveSearchData::ExtensiveSearchData()
+{
+	_comparesTarget = 5;
+}
+
+void ExtensiveSearchData::Create()
+{
+	cout << "----- Фильтр -----" << endl << endl;
+	InputFilterField("Марка", _brand);
+	InputFilterField("Год", &_year);
+	InputFilterField("Максимальная цена", &_price);
+	InputFilterField("Местоположение", _location);
+	InputFilterField("Пробег", &_mileage);
+}
+
+int ExtensiveSearchData::GetComparesCount(Advertisement advertisement)
+{
+	int count = 0;
+	CompareSearchData(advertisement.GetCar().GetBrand() == _brand || _brand == "", &count);
+	CompareSearchData(advertisement.GetCar().GetYear() == _year || _year == -1, &count);
+	CompareSearchData(advertisement.GetPrice() <= _price || _price == -1, &count);
+	CompareSearchData(advertisement.GetLocation() == _location || _location == "", &count);
+	CompareSearchData(advertisement.GetCar().GetMileage() == _mileage || _mileage == -1, &count);
+	return count;
 }

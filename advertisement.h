@@ -71,6 +71,8 @@ public:
 
 	int GetYear();
 
+	int GetMileage();
+
 	virtual void Create();
 
 	virtual void PrintCarData();
@@ -146,8 +148,8 @@ public:
 };
 
 class SearchData {
-private:
-	const int COMPARES_TARGET = 4;
+protected:
+	int _comparesTarget;
 	string _brand;
 	int _year;
 	int _price;
@@ -160,21 +162,42 @@ private:
 	void InputFilterField(string title, string& destination);
 
 public:
-	SearchData(string brand, int year, int price, string location);
-
-	SearchData(string brand);
-
-	SearchData();
-
 	SearchData& operator++();
 
 	SearchData operator++(int value);
 
+	virtual void Create();
+	
+	virtual int GetComparesCount(Advertisement advertisement);
+	
+	AdvertisementList SortAdvertisementList(AdvertisementList list);
+	
+	void PrintSearchData();
+};
+
+class BaseSearchData : public SearchData {
+public:
+	BaseSearchData(string brand, int year, int price, string location);
+	
+	BaseSearchData(string brand);
+	
+	BaseSearchData();
+	
 	void Create();
 
-	AdvertisementList SortAdvertisementList(AdvertisementList list);
+	int GetComparesCount(Advertisement advertisement);
+};
 
-	void PrintSearchData();
+class ExtensiveSearchData : public SearchData {
+private:
+	int _mileage;
+
+public:
+	ExtensiveSearchData();
+
+	void Create();
+
+	int GetComparesCount(Advertisement advertisement);
 };
 
 const string UsersBase = "users.txt";
