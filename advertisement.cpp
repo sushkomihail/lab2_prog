@@ -439,83 +439,6 @@ void Report::PrintReportData()
 	cout << registration << endl;
 }
 
-template<typename T>
-void SearchData<T>::CompareSearchData(bool expression, int* counter)
-{
-	if (expression) counter += 1;
-}
-
-template<typename T>
-void SearchData<T>::InputFilterField(string request, int* destination)
-{
-	string question = "Поле '" + request + "'(1 - ввести, 0 - пропустить): ";
-
-	if (InputBoolField(question)) {
-		InputIntField(request + ": ", destination);
-	}
-	else {
-		*destination = -1;
-	}
-}
-
-template<typename T>
-void SearchData<T>::InputFilterField(string request, string& destination)
-{
-	string question = "Поле '" + request + "'(1 - ввести, 0 - пропустить): ";
-	if (InputBoolField(question)) {
-		cout << request + ": ";
-		cin >> destination;
-		while (getchar() != '\n');
-	}
-}
-
-template<typename T>
-SearchData<T>& SearchData<T>::operator++()
-{
-	_year++;
-	_price++;
-	return *this;
-}
-
-template<typename T>
-SearchData<T> SearchData<T>::operator++(int)
-{
-	SearchData tmp(*this);
-	++(*this);
-	return tmp;
-}
-
-template<typename T>
-AdvertisementList SearchData<T>::SortAdvertisementList(AdvertisementList list)
-{
-	AdvertisementList newlist;
-
-	for (Advertisement advertisement : list) {
-		int count = GetComparesCount(advertisement);
-
-		if (count == _comparesTarget) {
-			newlist.push_back(advertisement);
-		}
-	}
-
-	return newlist;
-}
-
-template<typename T>
-void SearchData<T>::PrintSearchData()
-{
-	string brand = _brand == "" ? "Все" : _brand;
-	string year = _year == -1 ? "Все" : to_string(_year);
-	string price = _price == -1 ? "Все" : to_string(_price);
-	string location = _location == "" ? "Все" : _location;
-
-	cout << "----- Параметры поиска -----" << endl << endl;
-	cout << "Марка: " << brand << endl;
-	cout << "Год: " << year << endl;
-	cout << "Максимальная цена: " << price << endl;
-	cout << "Местоположение: " << location << endl;
-}
-
 Truck::Truck(string brand, int year, int enginePower, string transmission, int mileage, int loadCapacity) :
 	Car(brand, year, enginePower, transmission, mileage)
 {
@@ -553,8 +476,49 @@ void Truck::PrintCarData()
 	cout << "Грузоподъемность: " << _loadCapacity << endl;
 }
 
-template<typename T>
-BaseSearchData<T>::BaseSearchData(string brand, T year, int price, string location)
+void SearchData::CompareSearchData(bool expression, int* counter)
+{
+	if (expression) counter += 1;
+}
+
+AdvertisementList SearchData::SortAdvertisementList(AdvertisementList list)
+{
+	AdvertisementList newlist;
+
+	for (Advertisement advertisement : list) {
+		int count = GetComparesCount(advertisement);
+
+		if (count == _comparesTarget) {
+			newlist.push_back(advertisement);
+		}
+	}
+
+	return newlist;
+}
+
+void SearchData::InputFilterField(string request, int* destination)
+{
+	string question = "Поле '" + request + "'(1 - ввести, 0 - пропустить): ";
+
+	if (InputBoolField(question)) {
+		InputIntField(request + ": ", destination);
+	}
+	else {
+		*destination = -1;
+	}
+}
+
+void SearchData::InputFilterField(string request, string& destination)
+{
+	string question = "Поле '" + request + "'(1 - ввести, 0 - пропустить): ";
+	if (InputBoolField(question)) {
+		cout << request + ": ";
+		cin >> destination;
+		while (getchar() != '\n');
+	}
+}
+
+BaseSearchData::BaseSearchData(string brand, int year, int price, string location)
 {
 	_brand = brand;
 	_year = year;
@@ -563,8 +527,7 @@ BaseSearchData<T>::BaseSearchData(string brand, T year, int price, string locati
 	_comparesTarget = 4;
 }
 
-template<typename T>
-BaseSearchData<T>::BaseSearchData(string brand)
+BaseSearchData::BaseSearchData(string brand)
 {
 	_brand = brand;
 	_year = 0;
@@ -572,16 +535,14 @@ BaseSearchData<T>::BaseSearchData(string brand)
 	_comparesTarget = 4;
 }
 
-template<typename T>
-BaseSearchData<T>::BaseSearchData()
+BaseSearchData::BaseSearchData()
 {
 	_year = 0;
 	_price = 0;
 	_comparesTarget = 4;
 }
 
-template<typename T>
-void BaseSearchData<T>::Create()
+void BaseSearchData::Create()
 {
 	cout << "----- Фильтр -----" << endl << endl;
 	InputFilterField("Марка", _brand);
@@ -590,8 +551,7 @@ void BaseSearchData<T>::Create()
 	InputFilterField("Местоположение", _location);
 }
 
-template<typename T>
-int BaseSearchData<T>::GetComparesCount(Advertisement advertisement)
+int BaseSearchData::GetComparesCount(Advertisement advertisement)
 {
 	int count = 0;
 	CompareSearchData(advertisement.GetCar().GetBrand() == _brand || _brand == "", &count);
@@ -601,14 +561,40 @@ int BaseSearchData<T>::GetComparesCount(Advertisement advertisement)
 	return count;
 }
 
-template<typename T>
-ExtensiveSearchData<T>::ExtensiveSearchData()
+void BaseSearchData::PrintSearchData()
+{
+	string brand = _brand == "" ? "Все" : _brand;
+	string year = _year == -1 ? "Все" : to_string(_year);
+	string price = _price == -1 ? "Все" : to_string(_price);
+	string location = _location == "" ? "Все" : _location;
+
+	cout << "----- Параметры поиска -----" << endl << endl;
+	cout << "Марка: " << brand << endl;
+	cout << "Год: " << year << endl;
+	cout << "Максимальная цена: " << price << endl;
+	cout << "Местоположение: " << location << endl;
+}
+
+BaseSearchData& BaseSearchData::operator++()
+{
+	_year++;
+	_price++;
+	return *this;
+}
+
+BaseSearchData BaseSearchData::operator++(int)
+{
+	BaseSearchData tmp(*this);
+	++(*this);
+	return tmp;
+}
+
+ExtensiveSearchData::ExtensiveSearchData()
 {
 	_comparesTarget = 5;
 }
 
-template<typename T>
-void ExtensiveSearchData<T>::Create()
+void ExtensiveSearchData::Create()
 {
 	cout << "----- Фильтр -----" << endl << endl;
 	InputFilterField("Марка", _brand);
@@ -618,8 +604,7 @@ void ExtensiveSearchData<T>::Create()
 	InputFilterField("Пробег", &_mileage);
 }
 
-template<typename T>
-int ExtensiveSearchData<T>::GetComparesCount(Advertisement advertisement)
+int ExtensiveSearchData::GetComparesCount(Advertisement advertisement)
 {
 	int count = 0;
 	CompareSearchData(advertisement.GetCar().GetBrand() == _brand || _brand == "", &count);
@@ -628,4 +613,20 @@ int ExtensiveSearchData<T>::GetComparesCount(Advertisement advertisement)
 	CompareSearchData(advertisement.GetLocation() == _location || _location == "", &count);
 	CompareSearchData(advertisement.GetCar().GetMileage() == _mileage || _mileage == -1, &count);
 	return count;
+}
+
+void ExtensiveSearchData::PrintSearchData()
+{
+	string brand = _brand == "" ? "Все" : _brand;
+	string year = _year == -1 ? "Все" : to_string(_year);
+	string price = _price == -1 ? "Все" : to_string(_price);
+	string location = _location == "" ? "Все" : _location;
+	string mileage = _mileage == -1 ? "Все" : to_string(_mileage);
+
+	cout << "----- Параметры поиска -----" << endl << endl;
+	cout << "Марка: " << brand << endl;
+	cout << "Год: " << year << endl;
+	cout << "Максимальная цена: " << price << endl;
+	cout << "Местоположение: " << location << endl;
+	cout << "Максимальный пробег: " << mileage << endl;
 }

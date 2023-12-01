@@ -147,12 +147,11 @@ public:
 	void PrintAdvertisementData();
 };
 
-template<typename T>
 class SearchData {
 protected:
 	int _comparesTarget;
 	string _brand;
-	T _year;
+	int _year;
 	int _price;
 	string _location;
 
@@ -163,44 +162,88 @@ protected:
 	void InputFilterField(string title, string& destination);
 
 public:
-	SearchData& operator++();
+	virtual void Create() = 0;
 
-	SearchData operator++(int value);
+	virtual int GetComparesCount(Advertisement adverisement) = 0;
 
-	virtual void Create();
-	
-	virtual int GetComparesCount(Advertisement advertisement);
+	virtual void PrintSearchData() = 0;
 	
 	AdvertisementList SortAdvertisementList(AdvertisementList list);
-	
-	void PrintSearchData();
 };
 
-template<typename T>
-class BaseSearchData : public SearchData<T> {
+class BaseSearchData : public SearchData {
 public:
-	BaseSearchData(string brand, T year, int price, string location);
+	BaseSearchData(string brand, int year, int price, string location);
 	
 	BaseSearchData(string brand);
 	
 	BaseSearchData();
-	
-	void Create();
 
-	int GetComparesCount(Advertisement advertisement);
+	BaseSearchData& operator++();
+
+	BaseSearchData operator++(int value);
+	
+	void Create() override;
+
+	int GetComparesCount(Advertisement advertisement) override;
+
+	void PrintSearchData() override;
 };
 
-template<typename T>
-class ExtensiveSearchData : public SearchData<T> {
+class ExtensiveSearchData : public SearchData {
 private:
 	int _mileage;
 
 public:
 	ExtensiveSearchData();
 
-	void Create();
+	void Create() override;
 
-	int GetComparesCount(Advertisement advertisement);
+	int GetComparesCount(Advertisement advertisement) override;
+
+	void PrintSearchData() override;
+};
+
+template<typename T>
+class SaveSystem {
+private:
+	string _dataFile;
+
+public:
+	SaveSystem(string fileName) {
+		_dataFile = fileName;
+	}
+
+	void Save(T data) {
+		ofstream file;
+		file.open(_dataFile, ofstream::app);
+
+		if (file.is_open()) {
+			file.write((char*)&data, sizeof(T));
+		}
+		else {
+			cout << "Не удалось открыть файл!" << endl;
+		}
+
+		file.close();
+	}
+
+	T Load() {
+		ifstream file;
+		file.open(_dataFile);
+
+		T obj;
+
+		if (file.is_open()) {
+			file.read((char*)&obj, sizeof(T));
+		}
+		else {
+			cout << "Не удалось открыть файл!" << endl;
+		}
+
+		file.close();
+		return obj;
+	}
 };
 
 const string UsersBase = "users.txt";

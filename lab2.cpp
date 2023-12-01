@@ -77,8 +77,13 @@ int main()
 {
     setlocale(LC_ALL, "rus");
 
-    Truck t;
+    /*Truck t;
     Car c("mercedes");
     t = c;
-    t.PrintCarData();
+    t.PrintCarData();*/
+
+    User user("mihail", "12345m", "89007638734");
+    SaveSystem<User> saveSystem("data.txt");
+    User user1;
+    cout << saveSystem.Load().GetLogin();
 }
