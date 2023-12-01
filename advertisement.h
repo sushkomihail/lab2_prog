@@ -147,11 +147,12 @@ public:
 	void PrintAdvertisementData();
 };
 
+template<typename T>
 class SearchData {
 protected:
 	int _comparesTarget;
 	string _brand;
-	int _year;
+	T _year;
 	int _price;
 	string _location;
 
@@ -175,9 +176,10 @@ public:
 	void PrintSearchData();
 };
 
-class BaseSearchData : public SearchData {
+template<typename T>
+class BaseSearchData : public SearchData<T> {
 public:
-	BaseSearchData(string brand, int year, int price, string location);
+	BaseSearchData(string brand, T year, int price, string location);
 	
 	BaseSearchData(string brand);
 	
@@ -188,7 +190,8 @@ public:
 	int GetComparesCount(Advertisement advertisement);
 };
 
-class ExtensiveSearchData : public SearchData {
+template<typename T>
+class ExtensiveSearchData : public SearchData<T> {
 private:
 	int _mileage;
 

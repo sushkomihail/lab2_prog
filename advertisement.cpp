@@ -439,12 +439,14 @@ void Report::PrintReportData()
 	cout << registration << endl;
 }
 
-void SearchData::CompareSearchData(bool expression, int* counter)
+template<typename T>
+void SearchData<T>::CompareSearchData(bool expression, int* counter)
 {
 	if (expression) counter += 1;
 }
 
-void SearchData::InputFilterField(string request, int* destination)
+template<typename T>
+void SearchData<T>::InputFilterField(string request, int* destination)
 {
 	string question = "Поле '" + request + "'(1 - ввести, 0 - пропустить): ";
 
@@ -456,7 +458,8 @@ void SearchData::InputFilterField(string request, int* destination)
 	}
 }
 
-void SearchData::InputFilterField(string request, string& destination)
+template<typename T>
+void SearchData<T>::InputFilterField(string request, string& destination)
 {
 	string question = "Поле '" + request + "'(1 - ввести, 0 - пропустить): ";
 	if (InputBoolField(question)) {
@@ -466,21 +469,24 @@ void SearchData::InputFilterField(string request, string& destination)
 	}
 }
 
-SearchData& SearchData::operator++()
+template<typename T>
+SearchData<T>& SearchData<T>::operator++()
 {
 	_year++;
 	_price++;
 	return *this;
 }
 
-SearchData SearchData::operator++(int)
+template<typename T>
+SearchData<T> SearchData<T>::operator++(int)
 {
 	SearchData tmp(*this);
 	++(*this);
 	return tmp;
 }
 
-AdvertisementList SearchData::SortAdvertisementList(AdvertisementList list)
+template<typename T>
+AdvertisementList SearchData<T>::SortAdvertisementList(AdvertisementList list)
 {
 	AdvertisementList newlist;
 
@@ -495,7 +501,8 @@ AdvertisementList SearchData::SortAdvertisementList(AdvertisementList list)
 	return newlist;
 }
 
-void SearchData::PrintSearchData()
+template<typename T>
+void SearchData<T>::PrintSearchData()
 {
 	string brand = _brand == "" ? "Все" : _brand;
 	string year = _year == -1 ? "Все" : to_string(_year);
@@ -546,7 +553,8 @@ void Truck::PrintCarData()
 	cout << "Грузоподъемность: " << _loadCapacity << endl;
 }
 
-BaseSearchData::BaseSearchData(string brand, int year, int price, string location)
+template<typename T>
+BaseSearchData<T>::BaseSearchData(string brand, T year, int price, string location)
 {
 	_brand = brand;
 	_year = year;
@@ -555,7 +563,8 @@ BaseSearchData::BaseSearchData(string brand, int year, int price, string locatio
 	_comparesTarget = 4;
 }
 
-BaseSearchData::BaseSearchData(string brand)
+template<typename T>
+BaseSearchData<T>::BaseSearchData(string brand)
 {
 	_brand = brand;
 	_year = 0;
@@ -563,14 +572,16 @@ BaseSearchData::BaseSearchData(string brand)
 	_comparesTarget = 4;
 }
 
-BaseSearchData::BaseSearchData()
+template<typename T>
+BaseSearchData<T>::BaseSearchData()
 {
 	_year = 0;
 	_price = 0;
 	_comparesTarget = 4;
 }
 
-void BaseSearchData::Create()
+template<typename T>
+void BaseSearchData<T>::Create()
 {
 	cout << "----- Фильтр -----" << endl << endl;
 	InputFilterField("Марка", _brand);
@@ -579,7 +590,8 @@ void BaseSearchData::Create()
 	InputFilterField("Местоположение", _location);
 }
 
-int BaseSearchData::GetComparesCount(Advertisement advertisement)
+template<typename T>
+int BaseSearchData<T>::GetComparesCount(Advertisement advertisement)
 {
 	int count = 0;
 	CompareSearchData(advertisement.GetCar().GetBrand() == _brand || _brand == "", &count);
@@ -589,12 +601,14 @@ int BaseSearchData::GetComparesCount(Advertisement advertisement)
 	return count;
 }
 
-ExtensiveSearchData::ExtensiveSearchData()
+template<typename T>
+ExtensiveSearchData<T>::ExtensiveSearchData()
 {
 	_comparesTarget = 5;
 }
 
-void ExtensiveSearchData::Create()
+template<typename T>
+void ExtensiveSearchData<T>::Create()
 {
 	cout << "----- Фильтр -----" << endl << endl;
 	InputFilterField("Марка", _brand);
@@ -604,7 +618,8 @@ void ExtensiveSearchData::Create()
 	InputFilterField("Пробег", &_mileage);
 }
 
-int ExtensiveSearchData::GetComparesCount(Advertisement advertisement)
+template<typename T>
+int ExtensiveSearchData<T>::GetComparesCount(Advertisement advertisement)
 {
 	int count = 0;
 	CompareSearchData(advertisement.GetCar().GetBrand() == _brand || _brand == "", &count);
