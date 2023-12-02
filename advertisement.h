@@ -60,21 +60,13 @@ protected:
 
 public:
 	Car(string brand, int year, int enginePower, string transmission, int mileage);
-
 	Car(string brand);
-
 	Car();
-
 	Car operator+(const Car& car);
-
 	string GetBrand();
-
 	int GetYear();
-
 	int GetMileage();
-
 	virtual void Create();
-
 	virtual void PrintCarData();
 };
 
@@ -249,11 +241,7 @@ public:
 const string UsersBase = "users.txt";
 
 void ChangePassword(User &user);
-
 vector<string> SplitString(string string);
-
 UserList GetUserList();
-
 bool EnterToSystem(UserList users, User* user);
-
 void PrintAdvertisements(AdvertisementList advertisements);

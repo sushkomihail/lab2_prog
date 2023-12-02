@@ -1,5 +1,6 @@
 #include "advertisement.h"
 
+#pragma region Extensions
 bool IsNumber(string string) {
 	for (char symbol : string) {
 		if (symbol < '0' || symbol > '9') {
@@ -11,7 +12,7 @@ bool IsNumber(string string) {
 }
 
 void InputIntField(string request, int* destination)
-{	
+{
 	string value;
 
 	do {
@@ -34,7 +35,7 @@ bool InputBoolField(string question)
 	return command == 1;
 }
 
-void ChangePassword(User &user)
+void ChangePassword(User& user)
 {
 	cout << "----- Смена пароля -----" << endl;
 	cout << "Предыдущий пароль: " + user._password << endl;
@@ -117,7 +118,264 @@ void PrintAdvertisements(AdvertisementList advertisements)
 		cout << endl;
 	}
 }
+#pragma endregion
 
+#pragma region User
+User::User(string login, string password, string phoneNumber)
+{
+	_login = login;
+	_password = password;
+	_phoneNumber = phoneNumber;
+}
+
+User::User(string login)
+{
+	_login = login;
+}
+
+User::User()
+{
+}
+
+string User::GetLogin()
+{
+	return _login;
+}
+
+string User::GetPassword()
+{
+	return _password;
+}
+
+string User::GetPhoneNumber()
+{
+	return _phoneNumber;
+}
+
+AdvertisementList User::GetFavourites()
+{
+	return _favourites;
+}
+
+void User::InputLogin()
+{
+	cout << "Введите логин: ";
+	cin >> _login;
+}
+
+void User::InputPassword()
+{
+	cout << "Введите пароль: ";
+	cin >> _password;
+}
+
+void User::InputPhoneNumber()
+{
+	do {
+		cout << "Введите номер телефона: ";
+		cin >> _phoneNumber;
+		while (getchar() != '\n');
+	} while (!IsNumber(_phoneNumber));
+}
+
+void User::Create()
+{
+	cout << "----- Регистрация -----\n\n";
+
+	ofstream file;
+
+	try
+	{
+		file.open(UsersBase, ofstream::app);
+		InputLogin();
+		InputPassword();
+		InputPhoneNumber();
+		file << this->_login << ';' << this->_password << ';' << this->_phoneNumber << ';' << endl;
+	}
+	catch (const exception& ex)
+	{
+		cout << "Не удалось записать пользователя в базу!" << endl;
+		cout << ex.what() << endl;
+	}
+
+	file.close();
+}
+
+void User::AddToFavourites(Advertisement advertisement)
+{
+	_favourites.push_back(advertisement);
+	cout << "Объявление (id = " << advertisement.GetID() << ") добавлено в избранное!" << endl;
+}
+
+void User::PrintUserData()
+{
+	cout << "----- Данные пользователя -----" << endl;
+	cout << "Логин: " + _login << endl;
+	cout << "Номер телефона: " << _phoneNumber << endl;
+	cout << "Избранные объявления: " << endl;
+
+	try {
+		PrintAdvertisements(_favourites);
+	}
+	catch (const exception& ex) {
+		cout << ex.what() << endl;
+	}
+}
+#pragma endregion
+
+#pragma region Car
+Car::Car(string brand, int year, int enginePower, string transmission, int mileage)
+{
+	_brand = brand;
+	_year = year;
+	_enginePower = enginePower;
+	_transmission = transmission;
+	_mileage = mileage;
+}
+
+Car::Car(string brand)
+{
+	_brand = brand;
+	_year = 0;
+	_enginePower = 0;
+	_mileage = 0;
+}
+
+Car::Car()
+{
+	_year = 0;
+	_enginePower = 0;
+	_mileage = 0;
+}
+
+Car Car::operator+(const Car& car)
+{
+	Car tmp;
+	tmp._brand = _brand + car._brand;
+	tmp._year = _year + car._year;
+	tmp._enginePower = _enginePower + car._enginePower;
+	tmp._transmission = _transmission + car._transmission;
+	tmp._mileage = _enginePower + car._mileage;
+	return tmp;
+}
+
+string Car::GetBrand()
+{
+	return _brand;
+}
+
+int Car::GetYear()
+{
+	return _year;
+}
+
+int Car::GetMileage()
+{
+	return _mileage;
+}
+
+void Car::Create()
+{
+	cout << "Марка: ";
+	getline(cin, _brand);
+	InputIntField("Год производства: ", &_year);
+	InputIntField("Мощность двигателя: ", &_enginePower);
+	cout << "Тип КПП: ";
+	cin >> _transmission;
+	InputIntField("Пробег: ", &_mileage);
+}
+
+void Car::PrintCarData()
+{
+	cout << "<<< Данные об автомобиле >>>" << endl;
+	cout << "Марка: " + _brand << endl;
+	cout << "Год производства: " << _year << endl;
+	cout << "Мощность двигателя: " << _enginePower << endl;
+	cout << "КПП: " + _transmission << endl;
+	cout << "Пробег: " << _mileage << endl;
+}
+#pragma endregion
+
+#pragma region Truck
+Truck::Truck(string brand, int year, int enginePower, string transmission, int mileage, int loadCapacity) :
+	Car(brand, year, enginePower, transmission, mileage)
+{
+	_loadCapacity = loadCapacity;
+}
+
+Truck::Truck()
+{
+	_loadCapacity = 0;
+}
+
+Truck& Truck::operator=(const Car& car)
+{
+	if (&car != this) {
+		Truck tmp = (Truck&)car;
+		_brand = tmp._brand;
+		_year = tmp._year;
+		_enginePower = tmp._enginePower;
+		_transmission = tmp._transmission;
+		_mileage = tmp._mileage;
+	}
+
+	return *this;
+}
+
+void Truck::Create()
+{
+	Car::Create();
+	InputIntField("Грузоподъемность: ", &_loadCapacity);
+}
+
+void Truck::PrintCarData()
+{
+	cout << "Марка: " + _brand << endl;
+	cout << "Грузоподъемность: " << _loadCapacity << endl;
+}
+#pragma endregion
+
+#pragma region Report
+Report::Report(int crashesCount, bool isListedAsWanted, bool areDocumentsInOrder, bool isRegistered)
+{
+	_crashesCount = crashesCount;
+	_isListedAsWanted = isListedAsWanted;
+	_areDocumentsInOrder = areDocumentsInOrder;
+	_isRegistered = isRegistered;
+}
+
+Report::Report(int crashesCount)
+{
+	_crashesCount = crashesCount;
+}
+
+Report::Report()
+{
+	_crashesCount = 0;
+}
+
+void Report::Create()
+{
+	InputIntField("Количество аварий: ", &_crashesCount);
+	_isListedAsWanted = InputBoolField("Находится в розыске?(1-да, 0-нет): ");
+	_areDocumentsInOrder = InputBoolField("Документы в порядке?(1-да, 0-нет): ");
+	_isRegistered = InputBoolField("Зарегистрирована?(1-да, 0-нет): ");
+}
+
+void Report::PrintReportData()
+{
+	cout << "<<< Отчет по автомобилю >>>" << endl;
+	cout << "Количество аварий: " << _crashesCount << endl;
+	string wanted = _isListedAsWanted ? "Находится в розыске" : "Не находится в розыске";
+	cout << wanted << endl;
+	string documents = _areDocumentsInOrder ? "Документы в порядке" : "Документы не в порядке";
+	cout << documents << endl;
+	string registration = _isRegistered ? "Зарегистрирована" : "Не зарегистрирована";
+	cout << registration << endl;
+}
+#pragma endregion
+
+#pragma region Advertisement
 int Advertisement::_id = 0;
 
 void Advertisement::AssignID()
@@ -228,254 +486,9 @@ void Advertisement::PrintAdvertisementData()
 	cout << "Цена: " << _price << endl << endl;
 	cout << "Телефон продавца: " << _seller.GetPhoneNumber() << endl;
 }
+#pragma endregion
 
-User::User(string login, string password, string phoneNumber)
-{
-	_login = login;
-	_password = password;
-	_phoneNumber = phoneNumber;
-}
-
-User::User(string login)
-{
-	_login = login;
-}
-
-User::User()
-{
-}
-
-string User::GetLogin()
-{
-	return _login;
-}
-
-string User::GetPassword()
-{
-	return _password;
-}
-
-string User::GetPhoneNumber()
-{
-	return _phoneNumber;
-}
-
-AdvertisementList User::GetFavourites()
-{
-	return _favourites;
-}
-
-void User::InputLogin()
-{
-	cout << "Введите логин: ";
-	cin >> _login;
-}
-
-void User::InputPassword()
-{
-	cout << "Введите пароль: ";
-	cin >> _password;
-}
-
-void User::InputPhoneNumber()
-{
-	do {
-		cout << "Введите номер телефона: ";
-		cin >> _phoneNumber;
-		while (getchar() != '\n');
-	} while (!IsNumber(_phoneNumber));
-}
-
-void User::Create()
-{
-	cout << "----- Регистрация -----\n\n";
-
-	ofstream file;
-
-	try
-	{
-		file.open(UsersBase, ofstream::app);
-		InputLogin();
-		InputPassword();
-		InputPhoneNumber();
-		file << this->_login << ';' << this->_password << ';' << this->_phoneNumber << ';' << endl;
-	}
-	catch (const exception& ex)
-	{
-		cout << "Не удалось записать пользователя в базу!" << endl;
-		cout << ex.what() << endl;
-	}
-
-	file.close();
-}
-
-void User::AddToFavourites(Advertisement advertisement)
-{
-	_favourites.push_back(advertisement);
-	cout << "Объявление (id = " << advertisement.GetID() << ") добавлено в избранное!" << endl;
-}
-
-void User::PrintUserData()
-{
-	cout << "----- Данные пользователя -----" << endl;
-	cout << "Логин: " + _login << endl;
-	cout << "Номер телефона: " << _phoneNumber << endl;
-	cout << "Избранные объявления: " << endl;
-
-	try {
-		PrintAdvertisements(_favourites);
-	}
-	catch (const exception& ex) {
-		cout << ex.what() << endl;
-	}
-}
-
-Car::Car(string brand, int year, int enginePower, string transmission, int mileage)
-{
-	_brand = brand;
-	_year = year;
-	_enginePower = enginePower;
-	_transmission = transmission;
-	_mileage = mileage;
-}
-
-Car::Car(string brand)
-{
-	_brand = brand;
-	_year = 0;
-	_enginePower = 0;
-	_mileage = 0;
-}
-
-Car::Car()
-{
-	_year = 0;
-	_enginePower = 0;
-	_mileage = 0;
-}
-
-Car Car::operator+(const Car& car)
-{
-	Car tmp;
-	tmp._brand = _brand + car._brand;
-	tmp._year = _year + car._year;
-	tmp._enginePower = _enginePower + car._enginePower;
-	tmp._transmission = _transmission + car._transmission;
-	tmp._mileage = _enginePower + car._mileage;
-	return tmp;
-}
-
-string Car::GetBrand()
-{
-	return _brand;
-}
-
-int Car::GetYear()
-{
-	return _year;
-}
-
-int Car::GetMileage()
-{
-	return _mileage;
-}
-
-void Car::Create()
-{
-	cout << "Марка: ";
-	getline(cin, _brand);
-	InputIntField("Год производства: ", &_year);
-	InputIntField("Мощность двигателя: ", &_enginePower);
-	cout << "Тип КПП: ";
-	cin >> _transmission;
-	InputIntField("Пробег: ", &_mileage);
-}
-
-void Car::PrintCarData()
-{
-	cout << "<<< Данные об автомобиле >>>" << endl;
-	cout << "Марка: " + _brand << endl;
-	cout << "Год производства: " << _year << endl;
-	cout << "Мощность двигателя: " << _enginePower << endl;
-	cout << "КПП: " + _transmission << endl;
-	cout << "Пробег: " << _mileage << endl;
-}
-
-Report::Report(int crashesCount, bool isListedAsWanted, bool areDocumentsInOrder, bool isRegistered)
-{
-	_crashesCount = crashesCount;
-	_isListedAsWanted = isListedAsWanted;
-	_areDocumentsInOrder = areDocumentsInOrder;
-	_isRegistered = isRegistered;
-}
-
-Report::Report(int crashesCount)
-{
-	_crashesCount = crashesCount;
-}
-
-Report::Report()
-{
-	_crashesCount = 0;
-}
-
-void Report::Create()
-{
-	InputIntField("Количество аварий: ", &_crashesCount);
-	_isListedAsWanted = InputBoolField("Находится в розыске?(1-да, 0-нет): ");
-	_areDocumentsInOrder = InputBoolField("Документы в порядке?(1-да, 0-нет): ");
-	_isRegistered = InputBoolField("Зарегистрирована?(1-да, 0-нет): ");
-}
-
-void Report::PrintReportData()
-{
-	cout << "<<< Отчет по автомобилю >>>" << endl;
-	cout << "Количество аварий: " << _crashesCount << endl;
-	string wanted = _isListedAsWanted ? "Находится в розыске" : "Не находится в розыске";
-	cout << wanted << endl;
-	string documents = _areDocumentsInOrder ? "Документы в порядке" : "Документы не в порядке";
-	cout << documents << endl;
-	string registration = _isRegistered ? "Зарегистрирована" : "Не зарегистрирована";
-	cout << registration << endl;
-}
-
-Truck::Truck(string brand, int year, int enginePower, string transmission, int mileage, int loadCapacity) :
-	Car(brand, year, enginePower, transmission, mileage)
-{
-	_loadCapacity = loadCapacity;
-}
-
-Truck::Truck()
-{
-	_loadCapacity = 0;
-}
-
-Truck& Truck::operator=(const Car& car)
-{
-	if (&car != this) {
-		Truck tmp = (Truck&)car;
-		_brand = tmp._brand;
-		_year = tmp._year;
-		_enginePower = tmp._enginePower;
-		_transmission = tmp._transmission;
-		_mileage = tmp._mileage;
-	}
-
-	return *this;
-}
-
-void Truck::Create()
-{
-	Car::Create();
-	InputIntField("Грузоподъемность: ", &_loadCapacity);
-}
-
-void Truck::PrintCarData()
-{
-	cout << "Марка: " + _brand << endl;
-	cout << "Грузоподъемность: " << _loadCapacity << endl;
-}
-
+#pragma region SearchData
 void SearchData::CompareSearchData(bool expression, int* counter)
 {
 	if (expression) counter += 1;
@@ -517,7 +530,9 @@ void SearchData::InputFilterField(string request, string& destination)
 		while (getchar() != '\n');
 	}
 }
+#pragma endregion
 
+#pragma region BaseSearchData
 BaseSearchData::BaseSearchData(string brand, int year, int price, string location)
 {
 	_brand = brand;
@@ -588,7 +603,9 @@ BaseSearchData BaseSearchData::operator++(int)
 	++(*this);
 	return tmp;
 }
+#pragma endregion
 
+#pragma region ExtensiveSearchData
 ExtensiveSearchData::ExtensiveSearchData()
 {
 	_comparesTarget = 5;
@@ -630,3 +647,4 @@ void ExtensiveSearchData::PrintSearchData()
 	cout << "Местоположение: " << location << endl;
 	cout << "Максимальный пробег: " << mileage << endl;
 }
+#pragma endregion
