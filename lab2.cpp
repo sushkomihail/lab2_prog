@@ -1,89 +1,61 @@
 ﻿#include "advertisement.h"
 
-void ArrayWithDynamicObjects() {
-    Report* r1 = new Report(1, false, false, false);
-    Report* r2 = new Report(2);
-    Report* r3 = new Report(5, true, true, true);
+void VirtualVoidTest() {
+    Car testCar("dodge");
+    Truck testTruck("peterbilt");
 
-    Report reports[3] = { *r1, *r2, *r3 };
+    cout << "(Виртуальная функция)" << endl;
+    cout << "*car = &testCar:" << endl;
+    Car* car = &testCar;
+    car->PrintCarData();
+    cout << "----------------------------" << endl;
+    cout << "*car = &testTruck:" << endl;
+    car = &testTruck;
+    car->PrintCarData();
 
-    cout << "----- Массив с динамическими объектами -----" << endl;
-    for (Report report : reports) {
-        report.PrintReportData();
-        cout << endl;
-    }
+    cout << "\n(Невиртуальная функция)" << endl;
+    cout << "*car = &testCar:" << endl;
+    car = &testCar;
+    car->PrintCarData1();
+    cout << "----------------------------" << endl;
+    cout << "*car = &testTruck:" << endl;
+    car = &testTruck;
+    car->PrintCarData1();
+
+    cout << "\n(Вызов виртуальной функции невиртуальной базового класса)" << endl;
+    cout << "*car = &testCar:" << endl;
+    car = &testCar;
+    car->Print();
+    cout << "----------------------------" << endl;
+    cout << "*car = &testTruck:" << endl;
+    car = &testTruck;
+    car->Print();
 }
 
-void DynamicArrayWithObjects() {
-    int n = 3;
-    Report* reports = new Report[n]{ Report(1, true, false, true), Report(5), Report(3, false, true, false) };
-
-    cout << "----- Динамический массив с объектами -----" << endl;
-    for (int i = 0; i < n; i++) {
-        reports[i].PrintReportData();
-        cout << endl;
-    }
-
-    delete[] reports;
+void OperatorOverloadTest() {
+    cout << "truck = car:" << endl;
+    Car car = Car("ford");
+    Truck truck;
+    truck = car;
+    truck.PrintCarData();
 }
 
-void StaticField() {
-    Advertisement advs[]{Advertisement(Car("toyota")), Advertisement(Car("nissan")), Advertisement(Car("subaru"))};
-    
-    //cout << "----- Пример работы со статическим полем -----" << endl;
-    for (Advertisement adv : advs) {
-        cout << "Объявление(" + adv.GetCar().GetBrand() + "); id - " << adv.GetID() << endl;
-    }
-}
+void AbstractClassTest() {
+    cout << "Абстрактный класс:" << endl;
+    BaseSearchData bs;
+    bs.Create();
+    bs.PrintSearchData();
 
-void StaticVoid() {
-    cout << "----- Пример работы со статическим методом -----" << endl;
-    cout << "Количество объявлений - " << Advertisement::GetCount() << endl;
-}
-
-void TryCatch() {
-    User user;
-    user.Create();
-    user.Create();
-
-    UserList list = GetUserList();
-
-    cout << endl;
-
-    for (User user : list) {
-        cout << "Логин: " << user.GetLogin() << "; Пароль: " << user.GetPassword() << "; Телефон: " << user.GetPhoneNumber() << endl;
-    }
-}
-
-void TwoDimensionalArray() {
-    Car cars[2][2]{ { Car("toyota"), Car("mazda") }, { Car("nissan"), Car("honda") } };
-
-    for (int i = 0; i < 2; i++) {
-        for (int j = 0; j < 2; j++) {
-            cout << cars[i][j].GetBrand() << "\t";
-        }
-        cout << endl;
-    }
-
-    cout << endl << "Элеметы главной диагонали: ";
-
-    for (int i = 0; i < 2; i++) {
-        cout << cars[i][i].GetBrand() << "  ";
-    }
-    cout << endl;
+    ExtensiveSearchData es;
+    es.Create();
+    es.PrintSearchData();
 }
 
 int main()
 {
     setlocale(LC_ALL, "rus");
 
-    /*Truck t;
-    Car c("mercedes");
-    t = c;
-    t.PrintCarData();*/
-
-    User user("mihail", "12345m", "89007638734");
-    SaveSystem<User> saveSystem("data.txt");
-    User user1;
-    cout << saveSystem.Load().GetLogin();
+    //VirtualVoidTest();
+    //OperatorOverloadTest();
+    //AbstractClassTest();
 }

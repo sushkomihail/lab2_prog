@@ -63,11 +63,14 @@ public:
 	Car(string brand);
 	Car();
 	Car operator+(const Car& car);
+	Car& operator=(const Car& car);
 	string GetBrand();
 	int GetYear();
 	int GetMileage();
 	virtual void Create();
 	virtual void PrintCarData();
+	void PrintCarData1();
+	void Print();
 };
 
 class Truck : public Car {
@@ -76,10 +79,12 @@ private:
 
 public:
 	Truck(string brand, int year, int enginePower, string transmission, int mileage, int loadCapacity);
+	Truck(string brand);
 	Truck();
-	Truck& operator=(const Car& car);
-	void Create();
-	void PrintCarData();
+	Truck& operator=(const Car& rhs);
+	void Create() override;
+	void PrintCarData() override;
+	void PrintCarData1();
 };
 
 class Report {
@@ -208,33 +213,31 @@ public:
 
 	void Save(T data) {
 		ofstream file;
-		file.open(_dataFile, ofstream::app);
 
-		if (file.is_open()) {
+		try {
+			file.open(_dataFile, ofstream::app);
 			file.write((char*)&data, sizeof(T));
+			file.close();
 		}
-		else {
+		catch (const exception& ex) {
 			cout << "Не удалось открыть файл!" << endl;
-		}
-
-		file.close();
+			cout << ex.what() << endl;
+		}		
 	}
 
-	T Load() {
+	void Load(T* destination) {
 		ifstream file;
-		file.open(_dataFile);
 
-		T obj;
-
-		if (file.is_open()) {
-			file.read((char*)&obj, sizeof(T));
+		try {
+			file.open(_dataFile);
+			file.read((char*)destination, sizeof(T));
+			file.close();
 		}
-		else {
+		catch(const exception& ex)
+		{
 			cout << "Не удалось открыть файл!" << endl;
+			cout << ex.what() << endl;
 		}
-
-		file.close();
-		return obj;
 	}
 };
 

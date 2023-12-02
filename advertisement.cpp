@@ -259,6 +259,19 @@ Car Car::operator+(const Car& car)
 	return tmp;
 }
 
+Car& Car::operator=(const Car& car)
+{
+	if (this != &car) {
+		_brand = car._brand;
+		_year = car._year;
+		_enginePower = car._enginePower;
+		_transmission = car._transmission;
+		_mileage = car._mileage;
+	}
+
+	return *this;
+}
+
 string Car::GetBrand()
 {
 	return _brand;
@@ -294,6 +307,20 @@ void Car::PrintCarData()
 	cout << "КПП: " + _transmission << endl;
 	cout << "Пробег: " << _mileage << endl;
 }
+
+void Car::PrintCarData1() {
+	cout << "<<< Данные об автомобиле >>>" << endl;
+	cout << "Марка: " + _brand << endl;
+	cout << "Год производства: " << _year << endl;
+	cout << "Мощность двигателя: " << _enginePower << endl;
+	cout << "КПП: " + _transmission << endl;
+	cout << "Пробег: " << _mileage << endl;
+}
+
+void Car::Print()
+{
+	PrintCarData();
+}
 #pragma endregion
 
 #pragma region Truck
@@ -303,20 +330,21 @@ Truck::Truck(string brand, int year, int enginePower, string transmission, int m
 	_loadCapacity = loadCapacity;
 }
 
-Truck::Truck()
+Truck::Truck(string brand) : Car(brand)
 {
 	_loadCapacity = 0;
 }
 
-Truck& Truck::operator=(const Car& car)
+Truck::Truck() : Car()
 {
-	if (&car != this) {
-		Truck tmp = (Truck&)car;
-		_brand = tmp._brand;
-		_year = tmp._year;
-		_enginePower = tmp._enginePower;
-		_transmission = tmp._transmission;
-		_mileage = tmp._mileage;
+	_loadCapacity = 0;
+}
+
+Truck& Truck::operator=(const Car& rhs)
+{
+	if (&rhs != this) {
+		Car::operator=(rhs);
+		_loadCapacity = 0;
 	}
 
 	return *this;
@@ -330,7 +358,16 @@ void Truck::Create()
 
 void Truck::PrintCarData()
 {
+	cout << "<<< Данные о грузовике >>>" << endl;
 	cout << "Марка: " + _brand << endl;
+	cout << "Мощность двигателя: " << _enginePower << endl;
+	cout << "Грузоподъемность: " << _loadCapacity << endl;
+}
+
+void Truck::PrintCarData1() {
+	cout << "<<< Данные о грузовике >>>" << endl;
+	cout << "Марка: " + _brand << endl;
+	cout << "Мощность двигателя: " << _enginePower << endl;
 	cout << "Грузоподъемность: " << _loadCapacity << endl;
 }
 #pragma endregion
