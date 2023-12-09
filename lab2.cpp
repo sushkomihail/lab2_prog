@@ -51,6 +51,36 @@ void AbstractClassTest() {
     es.PrintSearchData();
 }
 
+void SorTest(vector<Car> vector) {
+    cout << "Сортировка по пробегу" << endl;
+    sort(vector.begin(), vector.end(), [](Car& car1, Car car2) {
+        return car1.GetMileage() < car2.GetMileage();
+        });
+
+    for (Car car : vector) {
+        car.PrintCarData();
+    }
+}
+
+void FindTest(vector<Car> vector) {
+    cout << "Поиск 'dodge'" << endl;
+
+    for (Car car : vector) {
+        car.PrintCarData();
+    }
+
+    auto result = find_if(vector.begin(), vector.end(), [](Car& car) {
+        return car.GetBrand() == "dodge";
+        });
+
+    if (result == vector.end()) {
+        cout << "Не найдено!";
+        return;
+    }
+    
+    cout << "****** Найдено! " << "индекс: " << result - vector.begin();
+}
+
 int main()
 {
     setlocale(LC_ALL, "rus");
@@ -58,4 +88,9 @@ int main()
     //VirtualVoidTest();
     //OperatorOverloadTest();
     //AbstractClassTest();
+
+    vector<Car> v = { Car("toyota", 1, 1, "m", 1), Truck("peterbilt", 1, 1, "a", 3, 1), Car("dodge", 1, 1, "a", 2) };
+    SorTest(v);
+    cout << "---------------------" << endl;
+    FindTest(v);
 }
